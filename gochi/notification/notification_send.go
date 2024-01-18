@@ -2,22 +2,37 @@ package notification
 
 import (
 	"log"
-	"net/smtp"
+	"os"
+	"strings"
+
+	"gopkg.in/gomail.v2"
 )
 
-func SendEmail(toEmail string, subject string, body string) {
+func SendEmail(toEmail string, subject string, htmlFilePath string, name string, date string, startHour string, endHour string) {
 	from := "go.haircut2024@gmail.com"
-	password := "Gohaircut2024*"
-	to := []string{toEmail}
-	smtpHost := "smtp.gmail.com"
-	smtpPort := "587"
+	password := "dfzu stxn lqwz wdpi"
 
-	message := []byte("Subject: " + subject + "\n\n" + body)
+	m := gomail.NewMessage()
+	m.SetHeader("From", from)
+	m.SetHeader("To", toEmail)
+	m.SetHeader("Subject", subject)
 
-	auth := smtp.PlainAuth("Support Go Haircut", from, password, smtpHost)
+	body, err := os.ReadFile(htmlFilePath)
+	if err != nil {
+		log.Fatalf("Erreur lors de la lecture du fichier HTML: %s", err)
+	}
+	htmlContent := string(body)
 
-	send := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
-	if send != nil {
-		log.Fatalf("Erreur lors de l'envoi de l'e-mail: %s", send)
+	htmlContent = strings.Replace(htmlContent, "{{NAME}}", name, -1)
+	htmlContent = strings.Replace(htmlContent, "{{DATE}}", date, -1)
+	htmlContent = strings.Replace(htmlContent, "{{START_HOUR}}", startHour, -1)
+	htmlContent = strings.Replace(htmlContent, "{{END_HOUR}}", endHour, -1)
+
+	m.SetBody("text/html", htmlContent)
+
+	d := gomail.NewDialer("smtp.gmail.com", 587, from, password)
+
+	if err := d.DialAndSend(m); err != nil {
+		log.Fatalf("Erreur lors de l'envoi de l'email: %s", err)
 	}
 }

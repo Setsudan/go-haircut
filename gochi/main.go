@@ -39,7 +39,7 @@ func main() {
 		json.NewEncoder(w).Encode(serverStatusRes)
 	})
 
-	notification.SendEmail("arsene03092002@gmail.com", "Votre rdv à été pris !", "Vous avez bel et bien réservé ! A la prochaine !")
+	notification.SendEmail("arsene03092002@gmail.com", "Votre rdv à été pris !", "./notification/mail_content.html", "Goloum", "23 janvier", "14:00", "15:00")
 
 	http.ListenAndServe(":8080", r)
 }
