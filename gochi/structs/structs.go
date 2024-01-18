@@ -1,50 +1,54 @@
 package structs
 
+import (
+	"time"
+)
+
 type Client struct {
-	Uid      string
-	Email    string
-	Age      int
-	Password string
+	UID      string `json:"uid"`
+	Email    string `json:"email"`
+	Age      int    `json:"age"`
+	Password string `json:"-"`
 }
 
-type HairSaloon struct {
-	Uid         string
-	Name        string
-	Address     string
-	Email       string
-	Phone       string
-	Openingtime string
-	Closingtime string
+type HairSalon struct {
+	UID         string    `json:"uid"`
+	Name        string    `json:"name"`
+	Address     string    `json:"address"`
+	Email       string    `json:"email"`
+	Phone       string    `json:"phone"`
+	OpeningTime time.Time `json:"openingTime"`
+	ClosingTime time.Time `json:"closingTime"`
 }
 
-type Haidresser struct {
-	Uid        string
-	SaloonID   *HairSaloon
-	FirstName  string
-	Speciality string
+type Hairdresser struct {
+	UID        string `json:"uid"`
+	SalonID    string `json:"salonId"`
+	FirstName  string `json:"firstName"`
+	Speciality string `json:"speciality"`
 }
 
-type Schedules struct {
-	Uid           string
-	HairdresserID *Haidresser
-	StartHour     string
-	EndHour       string
-	Availability  bool
+type Schedule struct {
+	UID           string    `json:"uid"`
+	HairdresserID string    `json:"hairdresserId"`
+	StartHour     time.Time `json:"startHour"`
+	EndHour       time.Time `json:"endHour"`
+	Availability  bool      `json:"availability"`
 }
 
-type Reservations struct {
-	Uid           string
-	SaloonID      *HairSaloon
-	ClientID      *Client
-	HairdresserID *Haidresser
-	StartHour     string
-	EndHour       string
-	Status        string
+type Reservation struct {
+	UID           string    `json:"uid"`
+	SalonID       string    `json:"salonId"`
+	ClientID      string    `json:"clientId"`
+	HairdresserID string    `json:"hairdresserId"`
+	StartHour     time.Time `json:"startHour"`
+	EndHour       time.Time `json:"endHour"`
+	Status        string    `json:"status"`
 }
 
 type Admin struct {
-	Uid      string
-	Name     string
-	Email    string
-	Password string
+	UID      string `json:"uid"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"-"`
 }
