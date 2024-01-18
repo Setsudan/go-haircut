@@ -10,7 +10,7 @@ services:
       - "5432:5432"
   backend:
     build:
-      context: ./backend
+      context: ./gochi
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
@@ -18,7 +18,7 @@ services:
       - db
   frontend:
     build:
-      context: ./frontend
+      context: ./gohaircut
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
