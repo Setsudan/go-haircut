@@ -6,6 +6,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+
+	"gohairdresser/notification"
 )
 
 // Res struct
@@ -36,6 +38,8 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(serverStatusRes)
 	})
+
+	notification.SendEmail("arsene03092002@gmail.com", "Votre rdv à été pris !", "Vous avez bel et bien réservé ! A la prochaine !")
 
 	http.ListenAndServe(":8080", r)
 }
