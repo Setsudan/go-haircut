@@ -4,6 +4,13 @@ import (
 	"time"
 )
 
+type APIResponse struct {
+	Code    int         `json:"code"`
+	Status  string      `json:"status"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
 type Client struct {
 	UID      string `json:"uid"`
 	Email    string `json:"email"`
@@ -11,14 +18,23 @@ type Client struct {
 	Password string `json:"-"`
 }
 
+type CreateHairSaloon struct {
+	Name        string `json:"name"`
+	Address     string `json:"address"`
+	Email       string `json:"email"`
+	Phone       string `json:"phone"`
+	OpeningTime string `json:"openingTime"`
+	ClosingTime string `json:"closingTime"`
+}
+
 type HairSaloon struct {
-	UID         string    `json:"uid"`
-	Name        string    `json:"name"`
-	Address     string    `json:"address"`
-	Email       string    `json:"email"`
-	Phone       string    `json:"phone"`
-	OpeningTime time.Time `json:"openingTime"`
-	ClosingTime time.Time `json:"closingTime"`
+	UID         string `json:"uid"`
+	Name        string `json:"name"`
+	Address     string `json:"address"`
+	Email       string `json:"email"`
+	Phone       string `json:"phone"`
+	OpeningTime string `json:"openingTime"`
+	ClosingTime string `json:"closingTime"`
 }
 
 type Hairdresser struct {
