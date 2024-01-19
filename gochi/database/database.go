@@ -24,7 +24,7 @@ func SetupDatabase() *sql.DB {
 		log.Fatalf("failed to connect: %v", err)
 	}
 
-	Tables(db)
+	createTables(db)
 	return db
 }
 
@@ -44,21 +44,97 @@ func ShowTables(db *sql.DB) {
 	}
 }
 
-func Tables(db *sql.DB) {
+func checkError(err error, context string) {
+	if err != nil {
+		log.Fatalf("failed to %s: %v", context, err)
+	}
+}
+
+func createTables(db *sql.DB) {
+	// Client table
+	_, err := db.Exec(`
+			CREATE TABLE IF NOT EXISTS clients (
+				uid VARCHAR(255) PRIMARY KEY,
+				email VARCHAR(255) NOT NULL,
+				age INT NOT NULL,
+				password VARCHAR(255) NOT NULL
+			)
+		`)
+	checkError(err, "clients")
+
+	// Hairdresser table
+	_, err = db.Exec(`
+			CREATE TABLE IF NOT EXISTS hairdressers (
+				uid VARCHAR(255) PRIMARY KEY,
+				salonID VARCHAR(255) NOT NULL,
+				firstName VARCHAR(255) NOT NULL,
+				speciality VARCHAR(255) NOT NULL
+			)
+		`)
+	checkError(err, "hairdressers")
+
+	// Admin table
+	_, err = db.Exec(`
+			CREATE TABLE IF NOT EXISTS admin (
+				uid VARCHAR(255) PRIMARY KEY,
+				name VARCHAR(255) NOT NULL,
+				email VARCHAR(255) NOT NULL,
+				password VARCHAR(255) NOT NULL
+			)
+		`)
+	checkError(err, "admin")
+
+	// Hair salon table
+	_, err = db.Exec(`
+			CREATE TABLE IF NOT EXISTS hairSalon (
+				uid VARCHAR(255) PRIMARY KEY,
+				name VARCHAR(255) NOT NULL,
+				email VARCHAR(255) NOT NULL,
+				phone VARCHAR(255) NOT NULL,
+				openingTime TIMESTAMP,
+				closingTime TIMESTAMP
+			)
+		`)
+	checkError(err, "hairSalon")
+
+	// Reservation table
+	_, err = db.Exec(`
+			CREATE TABLE IF NOT EXISTS reservation (
+				uid VARCHAR(255) PRIMARY KEY,
+				salonID VARCHAR(255) NOT NULL,
+				clientID VARCHAR(255) NOT NULL,
+				hairdresserID VARCHAR(255),
+				startHour TIMESTAMP,
+				endHour TIMESTAMP,
+				status VARCHAR(255),
+				FOREIGN KEY (hairdresserID) REFERENCES hairdressers(uid)
+			)
+		`)
+	checkError(err, "reservation")
+
+	// Schedule table
+	_, err = db.Exec(`
+			CREATE TABLE IF NOT EXISTS schedules (
+				uid VARCHAR(255) PRIMARY KEY,
+				hairdresserID VARCHAR(255),
+				startHour TIMESTAMP,
+				endHour TIMESTAMP,
+				availability BOOLEAN,
+				FOREIGN KEY (hairdresserID) REFERENCES hairdressers(uid)
+			)
+		`)
+	checkError(err, "schedules")
+
+}
+
+func insertTestData(db *sql.DB) {
 	fakeUser := structs.Client{
 		UID:      "uid1",
 		Email:    "emaildetest@gmail.com",
 		Age:      23,
 		Password: "azert",
 	}
-	_, err := db.Exec("CREATE TABLE IF NOT EXISTS clients (uid VARCHAR(255) PRIMARY KEY, email VARCHAR(255) NOT NULL, age INT NOT NULL, password VARCHAR(255) NOT NULL)")
-	if err != nil {
-		log.Fatalf("failed to create table %v", err)
-	}
-	/*
-		inject test user
-	*/
-	_, err = db.Exec("INSERT INTO clients (uid, email, age, password) VALUES (?, ?, ?, ?)", fakeUser.UID, fakeUser.Email, fakeUser.Age, fakeUser.Password)
+	_, err := db.Exec("INSERT INTO clients (uid, email, age, password) VALUES (?, ?, ?, ?)", fakeUser.UID, fakeUser.Email, fakeUser.Age, fakeUser.Password)
 	if err != nil {
 		log.Fatalf("failed to create user %v", err)
 	}
@@ -68,18 +144,6 @@ func Tables(db *sql.DB) {
 		SaloonID:   "1",
 		FirstName:  "John",
 		Speciality: "Colorist",
-	}
-
-	_, err = db.Exec(`
-        CREATE TABLE IF NOT EXISTS hairdressers (
-            uid VARCHAR(255) PRIMARY KEY,
-            saloonID INT NOT NULL,
-            firstName VARCHAR(255) NOT NULL,
-            speciality VARCHAR(255) NOT NULL
-        )
-    `)
-	if err != nil {
-		log.Fatalf("failed to create hairdressers table %v", err)
 	}
 
 	_, err = db.Exec("INSERT INTO hairdressers (uid, saloonID, firstName, speciality) VALUES (?, ?, ?, ?)", fakeHairdresser.UID, fakeHairdresser.SaloonID, fakeHairdresser.FirstName, fakeHairdresser.Speciality)
@@ -94,18 +158,6 @@ func Tables(db *sql.DB) {
 		Password: "motdepase",
 	}
 
-	_, err = db.Exec(`
-        CREATE TABLE IF NOT EXISTS admin (
-            uid VARCHAR(255) PRIMARY KEY,
-            name VARCHAR(255) NOT NULL,
-            email VARCHAR(255) NOT NULL,
-            password VARCHAR(255) NOT NULL
-        )
-    `)
-	if err != nil {
-		log.Fatalf("failed to create admin table %v", err)
-	}
-
 	_, err = db.Exec("INSERT INTO admin (uid, name, email, password) VALUES (?, ?, ?, ?)", fakeAdmin.UID, fakeAdmin.Name, fakeAdmin.Email, fakeAdmin.Password)
 	if err != nil {
 		log.Fatalf("failed to create admin %v", err)
@@ -118,20 +170,6 @@ func Tables(db *sql.DB) {
 		Phone:       "0612233456",
 		OpeningTime: time.Now(),
 		ClosingTime: time.Now(),
-	}
-
-	_, err = db.Exec(`
-        CREATE TABLE IF NOT EXISTS hairsaloon (
-            uid VARCHAR(255) PRIMARY KEY,
-            name VARCHAR(255) NOT NULL,
-            email VARCHAR(255) NOT NULL,
-            phone VARCHAR(255) NOT NULL,
-			openingtime TIMESTAMP,
-			closingtime TIMESTAMP,
-        )
-    `)
-	if err != nil {
-		log.Fatalf("failed to create hairsaloon table %v", err)
 	}
 
 	_, err = db.Exec("INSERT INTO hairsaloon (uid, name, email, phone, openingtime, closingtime) VALUES (?, ?, ?, ?, ?, ?)", fakeHairSaloon.UID, fakeHairSaloon.Name, fakeHairSaloon.Email, fakeHairSaloon.Phone, fakeHairSaloon.OpeningTime, fakeHairSaloon.ClosingTime)
@@ -149,22 +187,6 @@ func Tables(db *sql.DB) {
 		Status:        "test",
 	}
 
-	_, err = db.Exec(`
-        CREATE TABLE IF NOT EXISTS reservation (
-            uid VARCHAR(255) PRIMARY KEY,
-            saloonid VARCHAR(255) NOT NULL,
-            clientid VARCHAR(255) NOT NULL,
-            hairdresserid FOREIGN KEY (saloonid) REFERENCES hairsaloon,
-			starthour TIMESTAMP,
-			endhour TIMESTAMP,
-			status VARCHAR(355) NOT FULL
-			
-        )
-    `)
-	if err != nil {
-		log.Fatalf("failed to create reservation table %v", err)
-	}
-
 	_, err = db.Exec("INSERT INTO reservation (uid, saloonid, clientid, hairdresserid, starthour, endhour, status) VALUES (?, ?, ?, ?, ?, ?, ?)", fakeReservation.UID, fakeReservation.SaloonID, fakeReservation.ClientID, fakeReservation.HairdresserID, fakeReservation.StartHour, fakeReservation.EndHour, fakeReservation.Status)
 	if err != nil {
 		log.Fatalf("failed to create reservation %v", err)
@@ -176,20 +198,6 @@ func Tables(db *sql.DB) {
 		StartHour:     time.Now(),
 		EndHour:       time.Now(),
 		Availability:  true,
-	}
-
-	_, err = db.Exec(`
-        CREATE TABLE IF NOT EXISTS schedules (
-            uid VARCHAR(255) PRIMARY KEY,
-            hairdresserid FOREIGN KEY (saloonid) REFERENCES hairsaloon,
-			starthour TIMESTAMP,
-			endhour TIMESTAMP,
-			avaibility BOOLEAN
-			
-        )
-    `)
-	if err != nil {
-		log.Fatalf("failed to create schedules table %v", err)
 	}
 
 	_, err = db.Exec("INSERT INTO schedules (uid, hairdresserid, starthour, endhour, avaibility) VALUES (?, ?, ?, ?, ?)", fakeSchedules.UID, fakeSchedules.HairdresserID, fakeSchedules.StartHour, fakeSchedules.EndHour, fakeSchedules.Availability)
