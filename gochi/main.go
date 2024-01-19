@@ -6,13 +6,6 @@ import (
 
 	"gohairdresser/database"
 	"gohairdresser/router"
-	"encoding/json"
-	"log"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-
-	"gohairdresser/notification"
 )
 
 func main() {
