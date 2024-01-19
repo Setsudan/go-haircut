@@ -2,6 +2,7 @@ package router
 
 import (
 	"encoding/json"
+	"gohairdresser/router/routes"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -36,6 +37,11 @@ func SetupRouter() *chi.Mux {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(serverStatusRes)
 	})
+	routes.ClientsRoutes(r)
+	routes.HairdresserRoutes(r)
+	routes.AuthentificationRoutes(r)
+	routes.SaloonRoutes(r)
+	routes.AppointmentsRoutes(r)
 
 	return r
 }
