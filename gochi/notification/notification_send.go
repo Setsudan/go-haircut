@@ -1,38 +1,62 @@
 package notification
 
 import (
+	"bytes"
 	"log"
-	"os"
-	"strings"
+
+	"html/template"
 
 	"gopkg.in/gomail.v2"
 )
 
-func SendEmail(toEmail string, subject string, htmlFilePath string, name string, date string, startHour string, endHour string) {
+type EmailParams struct {
+	ToEmail   string
+	Subject   string
+	HTMLFile  string
+	Name      string
+	Date      string
+	StartHour string
+	EndHour   string
+}
+
+func SendEmail(params EmailParams) error {
 	from := "go.haircut2024@gmail.com"
 	password := "dfzu stxn lqwz wdpi"
 
 	m := gomail.NewMessage()
 	m.SetHeader("From", from)
-	m.SetHeader("To", toEmail)
-	m.SetHeader("Subject", subject)
+	m.SetHeader("To", params.ToEmail)
+	m.SetHeader("Subject", params.Subject)
 
-	body, err := os.ReadFile(htmlFilePath)
+	tmpl, err := template.ParseFiles(params.HTMLFile)
 	if err != nil {
-		log.Fatalf("Erreur lors de la lecture du fichier HTML: %s", err)
+		log.Println("Error parsing template:", err)
+		return err
 	}
-	htmlContent := string(body)
 
-	htmlContent = strings.Replace(htmlContent, "{{NAME}}", name, -1)
-	htmlContent = strings.Replace(htmlContent, "{{DATE}}", date, -1)
-	htmlContent = strings.Replace(htmlContent, "{{START_HOUR}}", startHour, -1)
-	htmlContent = strings.Replace(htmlContent, "{{END_HOUR}}", endHour, -1)
-
-	m.SetBody("text/html", htmlContent)
-
-	d := gomail.NewDialer("smtp.gmail.com", 587, from, password)
-
-	if err := d.DialAndSend(m); err != nil {
-		log.Fatalf("Erreur lors de l'envoi de l'email: %s", err)
+	data := struct {
+		Name      string
+		Date      string
+		StartHour string
+		EndHour   string
+	}{
+		Name:      params.Name,
+		Date:      params.Date,
+		StartHour: params.StartHour,
+		EndHour:   params.EndHour,
 	}
+
+	var tpl bytes.Buffer
+	if err := tmpl.Execute(&tpl, data); err != nil {
+		log.Println("Error executing template:", err)
+		return err
+	}
+
+	m.SetBody("text/html", tpl.String())
+	smtpHost := "smtp.gmail.com"
+	smtpPort := 587
+
+	d := gomail.NewDialer(smtpHost, smtpPort, from, password)
+
+	return d.DialAndSend(m)
 }

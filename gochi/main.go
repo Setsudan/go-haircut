@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -39,7 +40,18 @@ func main() {
 		json.NewEncoder(w).Encode(serverStatusRes)
 	})
 
-	notification.SendEmail("arsene03092002@gmail.com", "Votre rdv à été pris !", "./notification/mail_content.html", "Goloum", "23 janvier", "14:00", "15:00")
+	err := notification.SendEmail(notification.EmailParams{
+		ToEmail:   "lny.eth@gmail.com",
+		Subject:   "RDV accepté",
+		HTMLFile:  "./notification/mail_content.gohtml",
+		Name:      "Goloum",
+		Date:      "22 janvier 2024",
+		StartHour: "10:00",
+		EndHour:   "11:00",
+	})
+	if err != nil {
+		log.Fatalf("Fail to send email %s", err)
+	}
 
 	http.ListenAndServe(":8080", r)
 }
