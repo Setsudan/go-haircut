@@ -13,6 +13,8 @@ import (
 func SaloonRoutes(r *chi.Mux) {
 	r.Route("/saloons", func(r chi.Router) {
 		r.Post("/create", createSaloonRoute)
+		r.Get("/all", getAllHairSaloons)
+		r.Get("/{uid}", getHairSaloonByUID)
 	})
 }
 
@@ -65,4 +67,28 @@ func createSaloonRoute(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(response)
+
+}
+
+func getAllHairSaloons(w http.ResponseWriter, r *http.Request) {
+	db := database.SetupDatabase()
+	data, err := database.GetAllHairSaloons(db)
+	if err != nil {
+		SendErrorResponse(w, "Error retrieving hair saloons", err, http.StatusInternalServerError)
+		return
+	}
+
+	SendJSONResponse(w, data)
+}
+
+func getHairSaloonByUID(w http.ResponseWriter, r *http.Request) {
+	uid := chi.URLParam(r, "uid")
+	db := database.SetupDatabase()
+	data, err := database.GetHairSaloonByUID(db, uid)
+	if err != nil {
+		SendErrorResponse(w, "Hair saloon not found", err, http.StatusNotFound)
+		return
+	}
+
+	SendJSONResponse(w, data)
 }
