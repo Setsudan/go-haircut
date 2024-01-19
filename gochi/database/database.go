@@ -97,32 +97,30 @@ func createTables(db *sql.DB) {
 		`)
 	checkError(err, "hairSalon")
 
-	// Reservation table
+	// Reservation table without foreign key
 	_, err = db.Exec(`
-			CREATE TABLE IF NOT EXISTS reservation (
-				uid VARCHAR(255) PRIMARY KEY,
-				salonID VARCHAR(255) NOT NULL,
-				clientID VARCHAR(255) NOT NULL,
-				hairdresserID VARCHAR(255),
-				startHour TIMESTAMP,
-				endHour TIMESTAMP,
-				status VARCHAR(255),
-				FOREIGN KEY (hairdresserID) REFERENCES hairdressers(uid)
-			)
-		`)
+        CREATE TABLE IF NOT EXISTS reservation (
+            uid VARCHAR(255) PRIMARY KEY,
+            salonID VARCHAR(255) NOT NULL,
+            clientID VARCHAR(255) NOT NULL,
+            hairdresserID VARCHAR(255),
+            startHour TIMESTAMP,
+            endHour TIMESTAMP,
+            status VARCHAR(255)
+        )
+    `)
 	checkError(err, "reservation")
 
-	// Schedule table
+	// Schedule table without foreign key
 	_, err = db.Exec(`
-			CREATE TABLE IF NOT EXISTS schedules (
-				uid VARCHAR(255) PRIMARY KEY,
-				hairdresserID VARCHAR(255),
-				startHour TIMESTAMP,
-				endHour TIMESTAMP,
-				availability BOOLEAN,
-				FOREIGN KEY (hairdresserID) REFERENCES hairdressers(uid)
-			)
-		`)
+        CREATE TABLE IF NOT EXISTS schedules (
+            uid VARCHAR(255) PRIMARY KEY,
+            hairdresserID VARCHAR(255),
+            startHour TIMESTAMP,
+            endHour TIMESTAMP,
+            availability BOOLEAN
+        )
+    `)
 	checkError(err, "schedules")
 
 }
