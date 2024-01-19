@@ -4,13 +4,6 @@ import (
 	"time"
 )
 
-type APIResponse struct {
-	Code    int         `json:"code"`
-	Status  string      `json:"status"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
-}
-
 type Client struct {
 	UID      string `json:"uid"`
 	Email    string `json:"email"`
