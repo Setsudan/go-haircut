@@ -91,7 +91,7 @@ func GetAdminByUID(db *sql.DB, uid string) (structs.Admin, error) {
 
 // ===== For hair saloons =====
 func GetAllHairSaloons(db *sql.DB) ([]structs.HairSaloon, error) {
-	rows, err := db.Query("SELECT uid, name, email, phone, openingTime, closingTime FROM hairSalon")
+	rows, err := db.Query("SELECT uid, name, email, phone, openingTime, closingTime FROM hairSaloon")
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +110,7 @@ func GetAllHairSaloons(db *sql.DB) ([]structs.HairSaloon, error) {
 
 func GetHairSaloonByUID(db *sql.DB, uid string) (structs.HairSaloon, error) {
 	var s structs.HairSaloon
-	err := db.QueryRow("SELECT uid, name, email, phone, openingTime, closingTime FROM hairSalon WHERE uid=?", uid).Scan(&s.UID, &s.Name, &s.Email, &s.Phone, &s.OpeningTime, &s.ClosingTime)
+	err := db.QueryRow("SELECT uid, name, email, phone, openingTime, closingTime FROM hairSaloon WHERE uid=?", uid).Scan(&s.UID, &s.Name, &s.Email, &s.Phone, &s.OpeningTime, &s.ClosingTime)
 	if err != nil {
 		return s, err
 	}

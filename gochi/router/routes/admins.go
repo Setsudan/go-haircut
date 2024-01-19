@@ -1,9 +1,7 @@
 package routes
 
 import (
-	"encoding/json"
 	"gohairdresser/database"
-	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -17,28 +15,24 @@ func AdminsRoutes(r *chi.Mux) {
 }
 
 func getAllAdmins(w http.ResponseWriter, r *http.Request) {
-	data, err := database.GetAllAdmins(database.SetupDatabase())
+	db := database.SetupDatabase()
+	data, err := database.GetAllAdmins(db)
 	if err != nil {
-		log.Println(err)
+		SendErrorResponse(w, "No admins found", err, http.StatusBadRequest)
+		return
 	}
 
-	res, err2 := json.Marshal(data)
-	if err2 != nil {
-		log.Println(err2)
-	}
-	w.Write(res)
+	SendJSONResponse(w, data)
 }
 
 func getAdminByUID(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
-	data, err := database.GetAdminByUID(database.SetupDatabase(), uid)
+	db := database.SetupDatabase()
+	data, err := database.GetAdminByUID(db, uid)
 	if err != nil {
-		log.Println(err)
+		SendErrorResponse(w, "Admin not found", err, http.StatusNotFound)
+		return
 	}
 
-	res, err2 := json.Marshal(data)
-	if err2 != nil {
-		log.Println(err2)
-	}
-	w.Write(res)
+	SendJSONResponse(w, data)
 }

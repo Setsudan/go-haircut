@@ -1,9 +1,7 @@
 package routes
 
 import (
-	"encoding/json"
 	"gohairdresser/database"
-	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -17,30 +15,24 @@ func SaloonRoutes(r *chi.Mux) {
 }
 
 func getAllHairSaloons(w http.ResponseWriter, r *http.Request) {
-	data, err := database.GetAllHairSaloons(database.SetupDatabase())
+	db := database.SetupDatabase()
+	data, err := database.GetAllHairSaloons(db)
 	if err != nil {
-		log.Println(err)
+		SendErrorResponse(w, "Error retrieving hair saloons", err, http.StatusInternalServerError)
+		return
 	}
 
-	res, err2 := json.Marshal(data)
-
-	if err2 != nil {
-		log.Println(err2)
-	}
-	w.Write(res)
+	SendJSONResponse(w, data)
 }
 
 func getHairSaloonByUID(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
-	data, err := database.GetHairSaloonByUID(database.SetupDatabase(), uid)
+	db := database.SetupDatabase()
+	data, err := database.GetHairSaloonByUID(db, uid)
 	if err != nil {
-		log.Println(err)
+		SendErrorResponse(w, "Hair saloon not found", err, http.StatusNotFound)
+		return
 	}
 
-	res, err2 := json.Marshal(data)
-
-	if err2 != nil {
-		log.Println(err2)
-	}
-	w.Write(res)
+	SendJSONResponse(w, data)
 }

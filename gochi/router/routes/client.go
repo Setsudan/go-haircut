@@ -1,9 +1,7 @@
 package routes
 
 import (
-	"encoding/json"
 	"gohairdresser/database"
-	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -17,30 +15,24 @@ func ClientsRoutes(r *chi.Mux) {
 }
 
 func getAllClients(w http.ResponseWriter, r *http.Request) {
-	data, err := database.GetAllClients(database.SetupDatabase())
+	db := database.SetupDatabase()
+	data, err := database.GetAllClients(db)
 	if err != nil {
-		log.Println(err)
+		SendErrorResponse(w, "Error retrieving clients", err, http.StatusInternalServerError)
+		return
 	}
 
-	res, err2 := json.Marshal(data)
-
-	if err2 != nil {
-		log.Println(err2)
-	}
-	w.Write(res)
+	SendJSONResponse(w, data)
 }
 
 func getClientByUID(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
-	data, err := database.GetClientByUID(database.SetupDatabase(), uid)
+	db := database.SetupDatabase()
+	data, err := database.GetClientByUID(db, uid)
 	if err != nil {
-		log.Println(err)
+		SendErrorResponse(w, "Client not found", err, http.StatusNotFound)
+		return
 	}
 
-	res, err2 := json.Marshal(data)
-
-	if err2 != nil {
-		log.Println(err2)
-	}
-	w.Write(res)
+	SendJSONResponse(w, data)
 }

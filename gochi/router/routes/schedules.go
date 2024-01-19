@@ -1,9 +1,7 @@
 package routes
 
 import (
-	"encoding/json"
 	"gohairdresser/database"
-	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -17,28 +15,24 @@ func SchedulesRoutes(r *chi.Mux) {
 }
 
 func getAllSchedules(w http.ResponseWriter, r *http.Request) {
-	data, err := database.GetAllSchedules(database.SetupDatabase())
+	db := database.SetupDatabase()
+	data, err := database.GetAllSchedules(db)
 	if err != nil {
-		log.Println(err)
+		SendErrorResponse(w, "Error retrieving schedules", err, http.StatusInternalServerError)
+		return
 	}
 
-	res, err2 := json.Marshal(data)
-	if err2 != nil {
-		log.Println(err2)
-	}
-	w.Write(res)
+	SendJSONResponse(w, data)
 }
 
 func getScheduleByUID(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
-	data, err := database.GetScheduleByUID(database.SetupDatabase(), uid)
+	db := database.SetupDatabase()
+	data, err := database.GetScheduleByUID(db, uid)
 	if err != nil {
-		log.Println(err)
+		SendErrorResponse(w, "Schedule not found", err, http.StatusNotFound)
+		return
 	}
 
-	res, err2 := json.Marshal(data)
-	if err2 != nil {
-		log.Println(err2)
-	}
-	w.Write(res)
+	SendJSONResponse(w, data)
 }

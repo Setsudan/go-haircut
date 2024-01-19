@@ -1,9 +1,7 @@
 package routes
 
 import (
-	"encoding/json"
 	"gohairdresser/database"
-	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -13,39 +11,28 @@ func HairdresserRoutes(r *chi.Mux) {
 	r.Route("/hairdressers", func(r chi.Router) {
 		r.Get("/all", getAllHairdressers)
 		r.Get("/{uid}", getHairdresserByUID)
-		r.Put("/{hairdresserId}/schedule", updateHairdresserSchedule) // as defined previously
 	})
 }
 
 func getAllHairdressers(w http.ResponseWriter, r *http.Request) {
-	data, err := database.GetAllHairdressers(database.SetupDatabase())
+	db := database.SetupDatabase()
+	data, err := database.GetAllHairdressers(db)
 	if err != nil {
-		log.Println(err)
+		SendErrorResponse(w, "Error retrieving hairdressers", err, http.StatusInternalServerError)
+		return
 	}
 
-	res, err2 := json.Marshal(data)
-
-	if err2 != nil {
-		log.Println(err2)
-	}
-	w.Write(res)
+	SendJSONResponse(w, data)
 }
 
 func getHairdresserByUID(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
-	data, err := database.GetHairdresserByUID(database.SetupDatabase(), uid)
+	db := database.SetupDatabase()
+	data, err := database.GetHairdresserByUID(db, uid)
 	if err != nil {
-		log.Println(err)
+		SendErrorResponse(w, "Hairdresser not found", err, http.StatusNotFound)
+		return
 	}
 
-	res, err2 := json.Marshal(data)
-
-	if err2 != nil {
-		log.Println(err2)
-	}
-	w.Write(res)
-}
-
-func updateHairdresserSchedule(w http.ResponseWriter, r *http.Request) {
-	log.Println("updateHairdresserSchedule")
+	SendJSONResponse(w, data)
 }
