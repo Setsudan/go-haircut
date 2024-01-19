@@ -2,10 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+
+	"gohairdresser/notification"
 )
 
 // Res struct
@@ -36,6 +39,19 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(serverStatusRes)
 	})
+
+	err := notification.SendEmail(notification.EmailParams{
+		ToEmail:   "lny.eth@gmail.com",
+		Subject:   "RDV accepté",
+		HTMLFile:  "./notification/mail_content.gohtml",
+		Name:      "Goloum",
+		Date:      "22 janvier 2024",
+		StartHour: "10:00",
+		EndHour:   "11:00",
+	})
+	if err != nil {
+		log.Fatalf("Fail to send email %s", err)
+	}
 
 	http.ListenAndServe(":8080", r)
 }
