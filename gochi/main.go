@@ -1,9 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"net/http"
+
+	"gohairdresser/database"
+	"gohairdresser/router"
 	"encoding/json"
 	"log"
-	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -11,36 +15,17 @@ import (
 	"gohairdresser/notification"
 )
 
-// Res struct
-type Res struct {
-	Code    int         `json:"code"`
-	Status  string      `json:"status"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
-}
-
 func main() {
-	r := chi.NewRouter()
-	r.Use(middleware.Logger)
+	r := router.SetupRouter()
 
-	// CORS
-	r.Use(middleware.SetHeader("Access-Control-Allow-Origin", "*"))
-	r.Use(middleware.SetHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"))
-	r.Use(middleware.SetHeader("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization"))
+	db := database.SetupDatabase()
+	defer db.Close()
 
-	serverStatusRes := Res{
-		Code:    200,
-		Status:  "OK",
-		Message: "Server is running",
-		Data:    nil,
-	}
+	database.ShowTables(db)
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(serverStatusRes)
-	})
+	fmt.Println("Server is running on port 8080")
 
-	err := notification.SendEmail(notification.EmailParams{
+	/*err := notification.SendEmail(notification.EmailParams{
 		ToEmail:   "lny.eth@gmail.com",
 		Subject:   "RDV accepté",
 		HTMLFile:  "./notification/mail_content.gohtml",
@@ -51,7 +36,6 @@ func main() {
 	})
 	if err != nil {
 		log.Fatalf("Fail to send email %s", err)
-	}
-
+	}*/
 	http.ListenAndServe(":8080", r)
 }

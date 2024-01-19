@@ -11,7 +11,7 @@ type Client struct {
 	Password string `json:"-"`
 }
 
-type HairSalon struct {
+type HairSaloon struct {
 	UID         string    `json:"uid"`
 	Name        string    `json:"name"`
 	Address     string    `json:"address"`
@@ -23,7 +23,7 @@ type HairSalon struct {
 
 type Hairdresser struct {
 	UID        string `json:"uid"`
-	SalonID    string `json:"salonId"`
+	SaloonID   string `json:"saloonId"`
 	FirstName  string `json:"firstName"`
 	Speciality string `json:"speciality"`
 }
@@ -38,7 +38,7 @@ type Schedule struct {
 
 type Reservation struct {
 	UID           string    `json:"uid"`
-	SalonID       string    `json:"salonId"`
+	SaloonID      string    `json:"saloonId"`
 	ClientID      string    `json:"clientId"`
 	HairdresserID string    `json:"hairdresserId"`
 	StartHour     time.Time `json:"startHour"`
