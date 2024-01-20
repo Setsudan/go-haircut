@@ -4,6 +4,12 @@ import (
 	"time"
 )
 
+type CreateClient struct {
+	Email    string `json:"email"`
+	Age      int    `json:"age"`
+	Password string `json:"-"`
+}
+
 type Client struct {
 	UID      string `json:"uid"`
 	Email    string `json:"email"`
@@ -11,14 +17,29 @@ type Client struct {
 	Password string `json:"-"`
 }
 
+type CreateHairSaloon struct {
+	Name        string `json:"name"`
+	Address     string `json:"address"`
+	Email       string `json:"email"`
+	Phone       string `json:"phone"`
+	OpeningTime string `json:"openingTime"`
+	ClosingTime string `json:"closingTime"`
+}
+
 type HairSaloon struct {
-	UID         string    `json:"uid"`
-	Name        string    `json:"name"`
-	Address     string    `json:"address"`
-	Email       string    `json:"email"`
-	Phone       string    `json:"phone"`
-	OpeningTime time.Time `json:"openingTime"`
-	ClosingTime time.Time `json:"closingTime"`
+	UID         string `json:"uid"`
+	Name        string `json:"name"`
+	Address     string `json:"address"`
+	Email       string `json:"email"`
+	Phone       string `json:"phone"`
+	OpeningTime string `json:"openingTime"`
+	ClosingTime string `json:"closingTime"`
+}
+
+type CreateHairdresser struct {
+	SaloonID   string `json:"saloonId"`
+	FirstName  string `json:"firstName"`
+	Speciality string `json:"speciality"`
 }
 
 type Hairdresser struct {
@@ -44,6 +65,12 @@ type Reservation struct {
 	StartHour     time.Time `json:"startHour"`
 	EndHour       time.Time `json:"endHour"`
 	Status        string    `json:"status"`
+}
+
+type CreateAdmin struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"-"`
 }
 
 type Admin struct {

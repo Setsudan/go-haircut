@@ -15,8 +15,7 @@ func HairdresserRoutes(r *chi.Mux) {
 }
 
 func getAllHairdressers(w http.ResponseWriter, r *http.Request) {
-	db := database.SetupDatabase()
-	data, err := database.GetAllHairdressers(db)
+	data, err := database.GetAllHairdressers()
 	if err != nil {
 		SendErrorResponse(w, "Error retrieving hairdressers", err, http.StatusInternalServerError)
 		return
@@ -27,8 +26,7 @@ func getAllHairdressers(w http.ResponseWriter, r *http.Request) {
 
 func getHairdresserByUID(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
-	db := database.SetupDatabase()
-	data, err := database.GetHairdresserByUID(db, uid)
+	data, err := database.GetHairdresserByUID(uid)
 	if err != nil {
 		SendErrorResponse(w, "Hairdresser not found", err, http.StatusNotFound)
 		return
