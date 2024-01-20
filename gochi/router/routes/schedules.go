@@ -15,8 +15,7 @@ func SchedulesRoutes(r *chi.Mux) {
 }
 
 func getAllSchedules(w http.ResponseWriter, r *http.Request) {
-	db := database.SetupDatabase()
-	data, err := database.GetAllSchedules(db)
+	data, err := database.GetAllSchedules()
 	if err != nil {
 		SendErrorResponse(w, "Error retrieving schedules", err, http.StatusInternalServerError)
 		return
@@ -27,8 +26,7 @@ func getAllSchedules(w http.ResponseWriter, r *http.Request) {
 
 func getScheduleByUID(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
-	db := database.SetupDatabase()
-	data, err := database.GetScheduleByUID(db, uid)
+	data, err := database.GetScheduleByUID(uid)
 	if err != nil {
 		SendErrorResponse(w, "Schedule not found", err, http.StatusNotFound)
 		return

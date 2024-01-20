@@ -1,12 +1,13 @@
 package database
 
 import (
-	"database/sql"
 	"gohairdresser/structs"
 )
 
+var db = SetupDatabase()
+
 // ===== For clients =====
-func GetAllClients(db *sql.DB) ([]structs.Client, error) {
+func GetAllClients() ([]structs.Client, error) {
 	rows, err := db.Query("SELECT uid, email, age, password FROM clients")
 	if err != nil {
 		return nil, err
@@ -24,7 +25,7 @@ func GetAllClients(db *sql.DB) ([]structs.Client, error) {
 	return clients, nil
 }
 
-func GetClientByUID(db *sql.DB, uid string) (structs.Client, error) {
+func GetClientByUID(uid string) (structs.Client, error) {
 	var c structs.Client
 	err := db.QueryRow("SELECT uid, email, age, password FROM clients WHERE uid=?", uid).Scan(&c.UID, &c.Email, &c.Age, &c.Password)
 	if err != nil {
@@ -34,7 +35,7 @@ func GetClientByUID(db *sql.DB, uid string) (structs.Client, error) {
 }
 
 // ===== For hairdressers =====
-func GetAllHairdressers(db *sql.DB) ([]structs.Hairdresser, error) {
+func GetAllHairdressers() ([]structs.Hairdresser, error) {
 	rows, err := db.Query("SELECT uid, salonID, firstName, speciality FROM hairdressers")
 	if err != nil {
 		return nil, err
@@ -52,7 +53,7 @@ func GetAllHairdressers(db *sql.DB) ([]structs.Hairdresser, error) {
 	return hairdressers, nil
 }
 
-func GetHairdresserByUID(db *sql.DB, uid string) (structs.Hairdresser, error) {
+func GetHairdresserByUID(uid string) (structs.Hairdresser, error) {
 	var h structs.Hairdresser
 	err := db.QueryRow("SELECT uid, salonID, firstName, speciality FROM hairdressers WHERE uid=?", uid).Scan(&h.UID, &h.SaloonID, &h.FirstName, &h.Speciality)
 	if err != nil {
@@ -62,7 +63,7 @@ func GetHairdresserByUID(db *sql.DB, uid string) (structs.Hairdresser, error) {
 }
 
 // ===== For admins =====
-func GetAllAdmins(db *sql.DB) ([]structs.Admin, error) {
+func GetAllAdmins() ([]structs.Admin, error) {
 	rows, err := db.Query("SELECT uid, name, email, password FROM admin")
 	if err != nil {
 		return nil, err
@@ -80,7 +81,7 @@ func GetAllAdmins(db *sql.DB) ([]structs.Admin, error) {
 	return admins, nil
 }
 
-func GetAdminByUID(db *sql.DB, uid string) (structs.Admin, error) {
+func GetAdminByUID(uid string) (structs.Admin, error) {
 	var a structs.Admin
 	err := db.QueryRow("SELECT uid, name, email, password FROM admin WHERE uid=?", uid).Scan(&a.UID, &a.Name, &a.Email, &a.Password)
 	if err != nil {
@@ -90,7 +91,7 @@ func GetAdminByUID(db *sql.DB, uid string) (structs.Admin, error) {
 }
 
 // ===== For hair saloons =====
-func GetAllHairSaloons(db *sql.DB) ([]structs.HairSaloon, error) {
+func GetAllHairSaloons() ([]structs.HairSaloon, error) {
 	rows, err := db.Query("SELECT uid, name, address, email, phone, openingTime, closingTime FROM hairSaloon")
 	if err != nil {
 		return nil, err
@@ -108,7 +109,7 @@ func GetAllHairSaloons(db *sql.DB) ([]structs.HairSaloon, error) {
 	return salons, nil
 }
 
-func GetHairSaloonByUID(db *sql.DB, uid string) (structs.HairSaloon, error) {
+func GetHairSaloonByUID(uid string) (structs.HairSaloon, error) {
 	var s structs.HairSaloon
 	err := db.QueryRow("SELECT uid, name, address, email, phone, openingTime, closingTime FROM hairSaloon WHERE uid=?", uid).Scan(&s.UID, &s.Name, &s.Address, &s.Email, &s.Phone, &s.OpeningTime, &s.ClosingTime)
 	if err != nil {
@@ -118,7 +119,7 @@ func GetHairSaloonByUID(db *sql.DB, uid string) (structs.HairSaloon, error) {
 }
 
 // ===== For reservations =====
-func GetAllReservations(db *sql.DB) ([]structs.Reservation, error) {
+func GetAllReservations() ([]structs.Reservation, error) {
 	rows, err := db.Query("SELECT uid, salonID, clientID, hairdresserID, startHour, endHour, status FROM reservation")
 	if err != nil {
 		return nil, err
@@ -136,7 +137,7 @@ func GetAllReservations(db *sql.DB) ([]structs.Reservation, error) {
 	return reservations, nil
 }
 
-func GetReservationByUID(db *sql.DB, uid string) (structs.Reservation, error) {
+func GetReservationByUID(uid string) (structs.Reservation, error) {
 	var r structs.Reservation
 	err := db.QueryRow("SELECT uid, salonID, clientID, hairdresserID, startHour, endHour, status FROM reservation WHERE uid=?", uid).Scan(&r.UID, &r.SaloonID, &r.ClientID, &r.HairdresserID, &r.StartHour, &r.EndHour, &r.Status)
 	if err != nil {
@@ -146,7 +147,7 @@ func GetReservationByUID(db *sql.DB, uid string) (structs.Reservation, error) {
 }
 
 // ===== For schedules =====
-func GetAllSchedules(db *sql.DB) ([]structs.Schedule, error) {
+func GetAllSchedules() ([]structs.Schedule, error) {
 	rows, err := db.Query("SELECT uid, hairdresserID, startHour, endHour, availability FROM schedules")
 	if err != nil {
 		return nil, err
@@ -164,7 +165,7 @@ func GetAllSchedules(db *sql.DB) ([]structs.Schedule, error) {
 	return schedules, nil
 }
 
-func GetScheduleByUID(db *sql.DB, uid string) (structs.Schedule, error) {
+func GetScheduleByUID(uid string) (structs.Schedule, error) {
 	var s structs.Schedule
 	err := db.QueryRow("SELECT uid, hairdresserID, startHour, endHour, availability FROM schedules WHERE uid=?", uid).Scan(&s.UID, &s.HairdresserID, &s.StartHour, &s.EndHour, &s.Availability)
 	if err != nil {

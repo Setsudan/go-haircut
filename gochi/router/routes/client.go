@@ -15,8 +15,7 @@ func ClientsRoutes(r *chi.Mux) {
 }
 
 func getAllClients(w http.ResponseWriter, r *http.Request) {
-	db := database.SetupDatabase()
-	data, err := database.GetAllClients(db)
+	data, err := database.GetAllClients()
 	if err != nil {
 		SendErrorResponse(w, "Error retrieving clients", err, http.StatusInternalServerError)
 		return
@@ -27,8 +26,7 @@ func getAllClients(w http.ResponseWriter, r *http.Request) {
 
 func getClientByUID(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
-	db := database.SetupDatabase()
-	data, err := database.GetClientByUID(db, uid)
+	data, err := database.GetClientByUID(uid)
 	if err != nil {
 		SendErrorResponse(w, "Client not found", err, http.StatusNotFound)
 		return

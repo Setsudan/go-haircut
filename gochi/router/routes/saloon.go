@@ -19,8 +19,7 @@ func SaloonRoutes(r *chi.Mux) {
 }
 
 func getAllHairSaloons(w http.ResponseWriter, r *http.Request) {
-	db := database.SetupDatabase()
-	data, err := database.GetAllHairSaloons(db)
+	data, err := database.GetAllHairSaloons()
 	if err != nil {
 		SendErrorResponse(w, "Error retrieving hair saloons", err, http.StatusInternalServerError)
 		return
@@ -31,8 +30,7 @@ func getAllHairSaloons(w http.ResponseWriter, r *http.Request) {
 
 func getHairSaloonByUID(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
-	db := database.SetupDatabase()
-	data, err := database.GetHairSaloonByUID(db, uid)
+	data, err := database.GetHairSaloonByUID(uid)
 	if err != nil {
 		SendErrorResponse(w, "Hair saloon not found", err, http.StatusNotFound)
 		return
@@ -49,45 +47,20 @@ func createSaloonRoute(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if err == io.EOF {
 			// Handle empty body
-			response := structs.APIResponse{
-				Code:    http.StatusBadRequest,
-				Status:  "error",
-				Message: "Request body is empty or in wrong format",
-				Data:    structs.CreateHairSaloon{}, // Provide an example of the expected format
-			}
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(response)
+			SendErrorResponse(w, "Request body is empty or in wrong format", err, http.StatusBadRequest)
 			return
 		}
 		// Handle other JSON decoding errors
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		SendErrorResponse(w, "Failed to create saloon", err, http.StatusInternalServerError)
 		return
 	}
 
-	// Insert the saloon into the database
 	createdSaloon, err := database.CreateSaloon(saloon)
 	if err != nil {
-		response := structs.APIResponse{
-			Code:    http.StatusInternalServerError,
-			Status:  "error",
-			Message: "Failed to create saloon",
-			Data:    nil,
-		}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(response)
+		SendErrorResponse(w, "Failed to create saloon", err, http.StatusInternalServerError)
 		return
 	}
 
 	// Successful response
-	response := structs.APIResponse{
-		Code:    http.StatusCreated,
-		Status:  "success",
-		Message: "Saloon created successfully",
-		Data:    createdSaloon,
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(response)
+	SendJSONResponse(w, createdSaloon)
 }

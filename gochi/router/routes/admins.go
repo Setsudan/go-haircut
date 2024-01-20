@@ -15,8 +15,7 @@ func AdminsRoutes(r *chi.Mux) {
 }
 
 func getAllAdmins(w http.ResponseWriter, r *http.Request) {
-	db := database.SetupDatabase()
-	data, err := database.GetAllAdmins(db)
+	data, err := database.GetAllAdmins()
 	if err != nil {
 		SendErrorResponse(w, "No admins found", err, http.StatusBadRequest)
 		return
@@ -27,8 +26,7 @@ func getAllAdmins(w http.ResponseWriter, r *http.Request) {
 
 func getAdminByUID(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
-	db := database.SetupDatabase()
-	data, err := database.GetAdminByUID(db, uid)
+	data, err := database.GetAdminByUID(uid)
 	if err != nil {
 		SendErrorResponse(w, "Admin not found", err, http.StatusNotFound)
 		return

@@ -15,8 +15,7 @@ func AppointmentsRoutes(r *chi.Mux) {
 }
 
 func getAllAppointments(w http.ResponseWriter, r *http.Request) {
-	db := database.SetupDatabase()
-	data, err := database.GetAllReservations(db)
+	data, err := database.GetAllReservations()
 	if err != nil {
 		SendErrorResponse(w, "Error retrieving appointments", err, http.StatusInternalServerError)
 		return
@@ -27,8 +26,7 @@ func getAllAppointments(w http.ResponseWriter, r *http.Request) {
 
 func getAppointmentByUID(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
-	db := database.SetupDatabase()
-	data, err := database.GetReservationByUID(db, uid)
+	data, err := database.GetReservationByUID(uid)
 	if err != nil {
 		SendErrorResponse(w, "Appointment not found", err, http.StatusNotFound)
 		return
