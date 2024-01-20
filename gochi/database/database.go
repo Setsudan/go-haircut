@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"regexp"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
@@ -123,6 +124,16 @@ func createTables(db *sql.DB) {
 
 }
 
-func insertTestData(db *sql.DB) {
-	//
+func hashPassword(password string) string {
+	return password
+}
+
+func checkPassword(password string, hashedPassword string) bool {
+	return password == hashedPassword
+}
+
+var emailRegex = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
+
+func checkEmail(email string) bool {
+	return emailRegex.MatchString(email)
 }

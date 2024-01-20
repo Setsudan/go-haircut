@@ -4,6 +4,12 @@ import (
 	"time"
 )
 
+type CreateClient struct {
+	Email    string `json:"email"`
+	Age      int    `json:"age"`
+	Password string `json:"-"`
+}
+
 type Client struct {
 	UID      string `json:"uid"`
 	Email    string `json:"email"`
@@ -30,6 +36,12 @@ type HairSaloon struct {
 	ClosingTime string `json:"closingTime"`
 }
 
+type CreateHairdresser struct {
+	SaloonID   string `json:"saloonId"`
+	FirstName  string `json:"firstName"`
+	Speciality string `json:"speciality"`
+}
+
 type Hairdresser struct {
 	UID        string `json:"uid"`
 	SaloonID   string `json:"saloonId"`
@@ -53,6 +65,12 @@ type Reservation struct {
 	StartHour     time.Time `json:"startHour"`
 	EndHour       time.Time `json:"endHour"`
 	Status        string    `json:"status"`
+}
+
+type CreateAdmin struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"-"`
 }
 
 type Admin struct {
