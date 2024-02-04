@@ -16,8 +16,8 @@ func AdminsRoutes(r *chi.Mux) {
 
 func getAllAdmins(w http.ResponseWriter, r *http.Request) {
 	data, err := database.GetAllAdmins()
-	if err != nil {
-		SendErrorResponse(w, "No admins found", err, http.StatusBadRequest)
+	if err != nil && data == nil {
+		SendErrorResponse(w, "No admins found", err, http.StatusNotFound)
 		return
 	}
 

@@ -16,7 +16,7 @@ func ClientsRoutes(r *chi.Mux) {
 
 func getAllClients(w http.ResponseWriter, r *http.Request) {
 	data, err := database.GetAllClients()
-	if err != nil {
+	if err != nil && data == nil {
 		SendErrorResponse(w, "Error retrieving clients", err, http.StatusInternalServerError)
 		return
 	}

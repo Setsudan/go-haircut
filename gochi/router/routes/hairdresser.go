@@ -16,7 +16,7 @@ func HairdresserRoutes(r *chi.Mux) {
 
 func getAllHairdressers(w http.ResponseWriter, r *http.Request) {
 	data, err := database.GetAllHairdressers()
-	if err != nil {
+	if err != nil && data == nil {
 		SendErrorResponse(w, "Error retrieving hairdressers", err, http.StatusInternalServerError)
 		return
 	}

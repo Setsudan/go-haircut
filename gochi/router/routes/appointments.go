@@ -16,7 +16,7 @@ func AppointmentsRoutes(r *chi.Mux) {
 
 func getAllAppointments(w http.ResponseWriter, r *http.Request) {
 	data, err := database.GetAllReservations()
-	if err != nil {
+	if err != nil && data == nil {
 		SendErrorResponse(w, "Error retrieving appointments", err, http.StatusInternalServerError)
 		return
 	}

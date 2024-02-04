@@ -16,7 +16,7 @@ func SchedulesRoutes(r *chi.Mux) {
 
 func getAllSchedules(w http.ResponseWriter, r *http.Request) {
 	data, err := database.GetAllSchedules()
-	if err != nil {
+	if err != nil && data == nil {
 		SendErrorResponse(w, "Error retrieving schedules", err, http.StatusInternalServerError)
 		return
 	}
