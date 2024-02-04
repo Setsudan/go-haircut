@@ -17,7 +17,7 @@ type Client struct {
 	Password string `json:"-"`
 }
 
-type CreateHairSaloon struct {
+type CreateSaloon struct {
 	Name        string `json:"name"`
 	Address     string `json:"address"`
 	Email       string `json:"email"`

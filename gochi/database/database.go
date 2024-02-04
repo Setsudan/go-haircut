@@ -124,16 +124,16 @@ func createTables(db *sql.DB) {
 
 }
 
-func hashPassword(password string) string {
+func HashPassword(password string) string {
 	return password
 }
 
-func checkPassword(password string, hashedPassword string) bool {
+func CheckPassword(password string, hashedPassword string) bool {
 	return password == hashedPassword
 }
 
-var emailRegex = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
+var EmailRegex = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
 
-func checkEmail(email string) bool {
-	return emailRegex.MatchString(email)
+func CheckEmail(email string) bool {
+	return EmailRegex.MatchString(email)
 }

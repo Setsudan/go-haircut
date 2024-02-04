@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "Ce projet vise à développer une solution de gestion de réservations inspirée par\r Planity, spécifiquement conçue pour les salons de coiffure. L'objectif est de\r faciliter la prise de rendez-vous pour les clients tout en optimisant la gestion\r des créneaux horaires pour les salons.",
   "scripts": {
-    "install:backend": "cd gochi && go get && go mod tidy"
+    "install:backend": "cd gochi && go get && go mod tidy",
+    "run:backend": "cd gochi && go run main.go"
   },
   "keywords": [],
   "author": "",

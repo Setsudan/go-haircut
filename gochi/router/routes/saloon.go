@@ -5,7 +5,6 @@ import (
 	"gohairdresser/database"
 	"gohairdresser/structs"
 	"io"
-	"gohairdresser/database"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -41,7 +40,7 @@ func getHairSaloonByUID(w http.ResponseWriter, r *http.Request) {
 }
 
 func createSaloonRoute(w http.ResponseWriter, r *http.Request) {
-	var saloon structs.CreateHairSaloon
+	var saloon structs.CreateSaloon
 
 	// Decode the body into the struct
 	err := json.NewDecoder(r.Body).Decode(&saloon)
@@ -65,4 +64,3 @@ func createSaloonRoute(w http.ResponseWriter, r *http.Request) {
 	// Successful response
 	SendJSONResponse(w, createdSaloon)
 }
-
