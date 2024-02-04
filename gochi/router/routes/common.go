@@ -2,20 +2,39 @@ package routes
 
 import (
 	"encoding/json"
+	"gohairdresser/structs"
 	"io"
 	"log"
 	"net/http"
 )
 
-func SendJSONResponse(w http.ResponseWriter, data interface{}) {
-	res, err := json.Marshal(data)
+func SendResponse(w http.ResponseWriter, code int, status, message string, data interface{}, err error) {
+	var response structs.APIResponse
+
 	if err != nil {
-		SendErrorResponse(w, "Error marshalling JSON", err, http.StatusInternalServerError)
-		return
+		response = structs.APIResponse{
+			Code:    http.StatusInternalServerError,
+			Status:  "Error",
+			Message: err.Error(),
+			Data:    nil,
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		response = structs.APIResponse{
+			Code:    code,
+			Status:  status,
+			Message: message,
+			Data:    data,
+		}
+		w.WriteHeader(code)
 	}
+
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(res)
+	jsonErr := json.NewEncoder(w).Encode(response)
+	if jsonErr != nil {
+		// Log the error of failing to send the response
+		log.Printf("Error sending response: %v", jsonErr)
+	}
 }
 
 func SendErrorResponse(w http.ResponseWriter, message string, err error, statusCode int) {

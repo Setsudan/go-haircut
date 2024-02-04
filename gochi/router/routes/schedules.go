@@ -16,21 +16,21 @@ func SchedulesRoutes(r *chi.Mux) {
 
 func getAllSchedules(w http.ResponseWriter, r *http.Request) {
 	data, err := database.GetAllSchedules()
-	if err != nil && data == nil {
-		SendErrorResponse(w, "Error retrieving schedules", err, http.StatusInternalServerError)
+	if err != nil {
+		SendResponse(w, http.StatusInternalServerError, "Error", "Error retrieving schedules", nil, err)
 		return
 	}
 
-	SendJSONResponse(w, data)
+	SendResponse(w, http.StatusOK, "Success", "Schedules retrieved successfully", data, nil)
 }
 
 func getScheduleByUID(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
 	data, err := database.GetScheduleByUID(uid)
 	if err != nil {
-		SendErrorResponse(w, "Schedule not found", err, http.StatusNotFound)
+		SendResponse(w, http.StatusNotFound, "Error", "Schedule not found", nil, err)
 		return
 	}
 
-	SendJSONResponse(w, data)
+	SendResponse(w, http.StatusOK, "Success", "Schedule retrieved successfully", data, nil)
 }

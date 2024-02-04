@@ -11,8 +11,14 @@ type CreateClient struct {
 }
 
 type Client struct {
-	UID   string `json:"uid"`
-	Email string `json:"email"`
+	UID      string `json:"uid"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type Login struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type CreateSaloon struct {

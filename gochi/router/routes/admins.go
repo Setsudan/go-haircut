@@ -16,21 +16,21 @@ func AdminsRoutes(r *chi.Mux) {
 
 func getAllAdmins(w http.ResponseWriter, r *http.Request) {
 	data, err := database.GetAllAdmins()
-	if err != nil && data == nil {
-		SendErrorResponse(w, "No admins found", err, http.StatusNotFound)
+	if err != nil {
+		SendResponse(w, http.StatusNotFound, "Error", "No admins found", nil, err)
 		return
 	}
 
-	SendJSONResponse(w, data)
+	SendResponse(w, http.StatusOK, "Success", "Admins retrieved successfully", data, nil)
 }
 
 func getAdminByUID(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
 	data, err := database.GetAdminByUID(uid)
 	if err != nil {
-		SendErrorResponse(w, "Admin not found", err, http.StatusNotFound)
+		SendResponse(w, http.StatusNotFound, "Error", "Admin not found", nil, err)
 		return
 	}
 
-	SendJSONResponse(w, data)
+	SendResponse(w, http.StatusOK, "Success", "Admin retrieved successfully", data, nil)
 }

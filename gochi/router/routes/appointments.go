@@ -16,21 +16,21 @@ func AppointmentsRoutes(r *chi.Mux) {
 
 func getAllAppointments(w http.ResponseWriter, r *http.Request) {
 	data, err := database.GetAllReservations()
-	if err != nil && data == nil {
-		SendErrorResponse(w, "Error retrieving appointments", err, http.StatusInternalServerError)
+	if err != nil {
+		SendResponse(w, http.StatusInternalServerError, "Error", "Error retrieving appointments", nil, err)
 		return
 	}
 
-	SendJSONResponse(w, data)
+	SendResponse(w, http.StatusOK, "Success", "Appointments retrieved successfully", data, nil)
 }
 
 func getAppointmentByUID(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
 	data, err := database.GetReservationByUID(uid)
 	if err != nil {
-		SendErrorResponse(w, "Appointment not found", err, http.StatusNotFound)
+		SendResponse(w, http.StatusNotFound, "Error", "Appointment not found", nil, err)
 		return
 	}
 
-	SendJSONResponse(w, data)
+	SendResponse(w, http.StatusOK, "Success", "Appointment retrieved successfully", data, nil)
 }

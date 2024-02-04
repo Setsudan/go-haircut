@@ -34,6 +34,15 @@ func GetClientByUID(uid string) (structs.Client, error) {
 	return c, nil
 }
 
+func GetClientByEmail(email string) (structs.Client, error) {
+	var c structs.Client
+	err := db.QueryRow("SELECT uid, email, password FROM clients WHERE email=?", email).Scan(&c.UID, &c.Email, &c.Password)
+	if err != nil {
+		return c, err
+	}
+	return c, nil
+}
+
 // ===== For hairdressers =====
 func GetAllHairdressers() ([]structs.Hairdresser, error) {
 	rows, err := db.Query("SELECT uid, salonID, firstName, speciality FROM hairdressers")
