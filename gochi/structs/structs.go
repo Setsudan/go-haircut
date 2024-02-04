@@ -7,14 +7,12 @@ import (
 type CreateClient struct {
 	Email    string `json:"email"`
 	Age      int    `json:"age"`
-	Password string `json:"-"`
+	Password string `json:"password"`
 }
 
 type Client struct {
-	UID      string `json:"uid"`
-	Email    string `json:"email"`
-	Age      int    `json:"age"`
-	Password string `json:"-"`
+	UID   string `json:"uid"`
+	Email string `json:"email"`
 }
 
 type CreateSaloon struct {

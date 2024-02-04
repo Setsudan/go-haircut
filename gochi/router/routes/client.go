@@ -11,6 +11,7 @@ func ClientsRoutes(r *chi.Mux) {
 	r.Route("/clients", func(r chi.Router) {
 		r.Get("/all", getAllClients)
 		r.Get("/{uid}", getClientByUID)
+		r.Delete("/{uid}", deleteClientByUID)
 	})
 }
 
@@ -33,4 +34,15 @@ func getClientByUID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	SendJSONResponse(w, data)
+}
+
+func deleteClientByUID(w http.ResponseWriter, r *http.Request) {
+	uid := chi.URLParam(r, "uid")
+	err := database.DeleteClient(uid)
+	if err != nil {
+		SendErrorResponse(w, "Error deleting client", err, http.StatusInternalServerError)
+		return
+	}
+
+	SendJSONResponse(w, "Client deleted successfully")
 }

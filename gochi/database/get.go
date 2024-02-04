@@ -8,7 +8,7 @@ var db = SetupDatabase()
 
 // ===== For clients =====
 func GetAllClients() ([]structs.Client, error) {
-	rows, err := db.Query("SELECT uid, email, age, password FROM clients")
+	rows, err := db.Query("SELECT uid, email FROM clients")
 	if err != nil {
 		return nil, err
 	}
@@ -17,7 +17,7 @@ func GetAllClients() ([]structs.Client, error) {
 	var clients []structs.Client
 	for rows.Next() {
 		var c structs.Client
-		if err := rows.Scan(&c.UID, &c.Email, &c.Age, &c.Password); err != nil {
+		if err := rows.Scan(&c.UID, &c.Email); err != nil {
 			return nil, err
 		}
 		clients = append(clients, c)
@@ -27,7 +27,7 @@ func GetAllClients() ([]structs.Client, error) {
 
 func GetClientByUID(uid string) (structs.Client, error) {
 	var c structs.Client
-	err := db.QueryRow("SELECT uid, email, age, password FROM clients WHERE uid=?", uid).Scan(&c.UID, &c.Email, &c.Age, &c.Password)
+	err := db.QueryRow("SELECT uid, email FROM clients WHERE uid=?", uid).Scan(&c.UID, &c.Email)
 	if err != nil {
 		return c, err
 	}
@@ -64,7 +64,7 @@ func GetHairdresserByUID(uid string) (structs.Hairdresser, error) {
 
 // ===== For admins =====
 func GetAllAdmins() ([]structs.Admin, error) {
-	rows, err := db.Query("SELECT uid, name, email, password FROM admin")
+	rows, err := db.Query("SELECT uid, name, email FROM admin")
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func GetAllAdmins() ([]structs.Admin, error) {
 	var admins []structs.Admin
 	for rows.Next() {
 		var a structs.Admin
-		if err := rows.Scan(&a.UID, &a.Name, &a.Email, &a.Password); err != nil {
+		if err := rows.Scan(&a.UID, &a.Name, &a.Email); err != nil {
 			return nil, err
 		}
 		admins = append(admins, a)
@@ -83,7 +83,7 @@ func GetAllAdmins() ([]structs.Admin, error) {
 
 func GetAdminByUID(uid string) (structs.Admin, error) {
 	var a structs.Admin
-	err := db.QueryRow("SELECT uid, name, email, password FROM admin WHERE uid=?", uid).Scan(&a.UID, &a.Name, &a.Email, &a.Password)
+	err := db.QueryRow("SELECT uid, name, email FROM admin WHERE uid=?", uid).Scan(&a.UID, &a.Name, &a.Email)
 	if err != nil {
 		return a, err
 	}
