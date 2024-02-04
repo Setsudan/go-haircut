@@ -7,6 +7,8 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+var emptyStruct = struct{}{}
+
 func AppointmentsRoutes(r *chi.Mux) {
 	r.Route("/appointments", func(r chi.Router) {
 		r.Get("/all", getAllAppointments)
@@ -52,7 +54,7 @@ func updateReservationStatusToFalse(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	SendResponse(w, http.StatusOK, "Success", "Appointment status updated successfully", data, nil)
+	SendResponse(w, http.StatusOK, "Success", "Appointment status updated successfully", emptyStruct, nil)
 }
 
 func updateSaloonName(w http.ResponseWriter, r *http.Request) {
@@ -64,7 +66,7 @@ func updateSaloonName(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	SendResponse(w, http.StatusOK, "Success", "Saloon name updated successfully", data, nil)
+	SendResponse(w, http.StatusOK, "Success", "Saloon name updated successfully", emptyStruct, nil)
 }
 
 func updateSaloonAddress(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +78,7 @@ func updateSaloonAddress(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	SendResponse(w, http.StatusOK, "Success", "Saloon address updated successfully", data, nil)
+	SendResponse(w, http.StatusOK, "Success", "Saloon address updated successfully", emptyStruct, nil)
 
 }
 
@@ -89,7 +91,7 @@ func updateSaloonEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	SendResponse(w, http.StatusOK, "Success", "Saloon email updated successfully", data, nil)
+	SendResponse(w, http.StatusOK, "Success", "Saloon email updated successfully", emptyStruct, nil)
 }
 
 func updateSaloonPhone(w http.ResponseWriter, r *http.Request) {
@@ -101,7 +103,7 @@ func updateSaloonPhone(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	SendResponse(w, http.StatusOK, "Success", "Saloon phone updated successfully", data, nil)
+	SendResponse(w, http.StatusOK, "Success", "Saloon phone updated successfully", emptyStruct, nil)
 }
 
 func updateSaloonOpeningTime(w http.ResponseWriter, r *http.Request) {
@@ -113,7 +115,7 @@ func updateSaloonOpeningTime(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	SendResponse(w, http.StatusOK, "Success", "Saloon opening time updated successfully", data, nil)
+	SendResponse(w, http.StatusOK, "Success", "Saloon opening time updated successfully", emptyStruct, nil)
 }
 
 func updateSaloonClosingTime(w http.ResponseWriter, r *http.Request) {
@@ -125,5 +127,5 @@ func updateSaloonClosingTime(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	SendResponse(w, http.StatusOK, "Success", "Saloon closing time updated successfully", data, nil)
+	SendResponse(w, http.StatusOK, "Success", "Saloon closing time updated successfully", emptyStruct, nil)
 }
