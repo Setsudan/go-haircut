@@ -1,34 +1,33 @@
-# README pour le Projet de Gestion des Réservations
+# Project README: Hair Salon Booking Management System
 
-## Introduction
+## Overview
 
-Ce projet vise à développer une solution de gestion de réservations inspirée par
-Planity, spécifiquement conçue pour les salons de coiffure. L'objectif est de
-faciliter la prise de rendez-vous pour les clients tout en optimisant la gestion
-des créneaux horaires pour les salons.
+This project is aimed at creating a booking management system inspired by Planity, tailored specifically for hair salons. The primary goal is to streamline the appointment booking process for customers while enhancing slot management for salons.
 
-## Fonctionnalités
+## Key Features
 
-### Pour les Salons de Coiffure
+### For Hair Salons
 
-- **Gestion des Créneaux d'Ouverture** : Chaque salon peut définir et ajuster
-  ses heures d'ouverture, y compris la disponibilité spécifique de chaque
-  coiffeur.
+- **Opening Slot Management**: Salons can set and modify their operating hours, including the specific availability of each hairstylist.
 
-### Pour les Clients
+### For Customers
 
-- **Réservation de Créneaux** : Après s'être connectés, les clients peuvent
-  parcourir les disponibilités et réserver un créneau qui leur convient.
+- **Slot Booking**: Once logged in, customers can view available slots and book an appointment that suits their schedule.
 
-### Pour les Administrateurs
+### For Administrators
 
-- **Surveillance et Gestion** : Les administrateurs ont accès à un tableau de
-  bord pour surveiller l'activité, gérer les comptes utilisateurs, et apporter
-  des ajustements si nécessaire.
+- **Monitoring and Management**: Administrators have access to a dashboard for tracking activities, managing user accounts, and making necessary adjustments.
 
-## Technologies Utilisées
+## Technologies Employed
 
 - [Go](https://golang.org/)
 - [Chi Router](https://github.com/go-chi/chi)
 
----
+## Collaborators
+
+This project is a collaborative effort among students for a school assignment. The team members and their contributions are listed below:
+
+- **Ethan Launay** - @Setsudashi
+- **Arsene Dobrovolskyy** - @Daiiruin
+- **Hugo Granier** - @hugogranier
+- **Sandie Ouallet** - @Ouallet-Sandie
