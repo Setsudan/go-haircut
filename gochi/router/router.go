@@ -37,11 +37,14 @@ func SetupRouter() *chi.Mux {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(serverStatusRes)
 	})
+
+	routes.AdminsRoutes(r)
+	routes.AppointmentsRoutes(r)
+	routes.AuthentificationRoutes(r)
 	routes.ClientsRoutes(r)
 	routes.HairdresserRoutes(r)
-	routes.AuthentificationRoutes(r)
 	routes.SaloonRoutes(r)
-	routes.AppointmentsRoutes(r)
+	routes.SchedulesRoutes(r)
 
 	return r
 }

@@ -7,17 +7,21 @@ import (
 type CreateClient struct {
 	Email    string `json:"email"`
 	Age      int    `json:"age"`
-	Password string `json:"-"`
+	Password string `json:"password"`
 }
 
 type Client struct {
 	UID      string `json:"uid"`
 	Email    string `json:"email"`
-	Age      int    `json:"age"`
-	Password string `json:"-"`
+	Password string `json:"password"`
 }
 
-type CreateHairSaloon struct {
+type Login struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type CreateSaloon struct {
 	Name        string `json:"name"`
 	Address     string `json:"address"`
 	Email       string `json:"email"`

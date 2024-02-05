@@ -1,29 +1,57 @@
 package auth
 
-/* In this file, we will create a middleware for the authentification of the user.
- * We will use the middleware provided by chi to create a middleware that will
- * check if the user is authenticated or not.
- * We will also have a sign in and sign up route. As well as a sign out route.
- * We will also have the functions related to them.
- */
+import (
+	"gohairdresser/database"
+	"gohairdresser/structs"
 
-/* import (
-	"net/http"
-	"time"
+	"github.com/dgrijalva/jwt-go"
+)
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-) */
+func GenerateJWT(client structs.Client) (string, error) {
+	claims := jwt.MapClaims{}
+	claims["authorized"] = true
+	claims["client_id"] = client.UID
+	claims["email"] = client.Email
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte("secret"))
+}
 
-// Auth is the struct that will hold the information about the user.
+func CreateClient(client structs.CreateClient) (string, error) {
+	hashedPassword, err := database.HashPassword(client.Password)
+	if err != nil {
+		return "", err
+	}
+	client.Password = hashedPassword
+	return database.CreateClient(client)
+}
 
-// There's three possible roles
-// Saloon, Clients, Admin, Hairdresser
+func LoginClient(email, password string) (structs.Client, string, error) {
+	acc, err := database.LoginClient(email, password)
+	if err != nil {
+		// You can use custom error types or error messages to differentiate the errors
+		if err == database.ErrAccountNotFound {
+			return structs.Client{}, "", err
+		} else if err == database.ErrInvalidPassword {
+			return structs.Client{}, "", err
+		}
+		// Handle other possible errors
+		return structs.Client{}, "", err
+	}
 
-// Structs
-type Auth struct {
-	UID      string
-	Email    string
-	Password string
-	Role     string
+	// Generate JWT token for the authenticated client
+	token, err := GenerateJWT(acc)
+	if err != nil {
+		// Handle JWT generation error
+		return structs.Client{}, "", err
+	}
+
+	return acc, token, nil
+}
+
+func DeleteClient(uid string) error {
+	return database.DeleteClient(uid)
+}
+
+func CreateSaloon(saloon structs.CreateSaloon) (string, error) {
+	return database.CreateSaloon(saloon)
 }

@@ -30,5 +30,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Fail to send email %s", err)
 	}*/
+
+	// Log all routes
 	http.ListenAndServe(":8080", r)
 }

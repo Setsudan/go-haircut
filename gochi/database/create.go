@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func CreateSaloon(saloonData structs.CreateHairSaloon) (string, error) {
+func CreateSaloon(saloonData structs.CreateSaloon) (string, error) {
 	uid := uuid.New().String()
 
 	db := SetupDatabase()
