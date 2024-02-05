@@ -13,7 +13,7 @@ func AppointmentsRoutes(r *chi.Mux) {
 	r.Route("/appointments", func(r chi.Router) {
 		r.Get("/all", getAllAppointments)
 		r.Get("/{uid}", getAppointmentByUID)
-		r.Patch("/{uid}", updateReservationStatusToFalse)
+		r.Patch("/{uid}", updateAppointmentsStatusToFalse)
 		r.Patch("/saloonName/{uid}", updateSaloonName)
 		r.Patch("/saloonAddress/{uid}", updateSaloonAddress)
 		r.Patch("/saloonEmail/{uid}", updateSaloonEmail)
@@ -25,7 +25,7 @@ func AppointmentsRoutes(r *chi.Mux) {
 
 // ===== GET =====
 func getAllAppointments(w http.ResponseWriter, r *http.Request) {
-	data, err := database.GetAllReservations()
+	data, err := database.GetAllAppointmentss()
 	if err != nil {
 		SendResponse(w, http.StatusInternalServerError, "Error", "Error retrieving appointments", nil, err)
 		return
@@ -36,7 +36,7 @@ func getAllAppointments(w http.ResponseWriter, r *http.Request) {
 
 func getAppointmentByUID(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
-	data, err := database.GetReservationByUID(uid)
+	data, err := database.GetAppointmentsByUID(uid)
 	if err != nil {
 		SendResponse(w, http.StatusNotFound, "Error", "Appointment not found", nil, err)
 		return
@@ -46,9 +46,9 @@ func getAppointmentByUID(w http.ResponseWriter, r *http.Request) {
 }
 
 // ===== UPDATE =====
-func updateReservationStatusToFalse(w http.ResponseWriter, r *http.Request) {
+func updateAppointmentsStatusToFalse(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "uid")
-	err := database.UpdateReservationStatusToFalse(uid)
+	err := database.UpdateAppointmentsStatusToFalse(uid)
 	if err != nil {
 		SendResponse(w, http.StatusInternalServerError, "Error", "Error updating appointment status", nil, err)
 		return

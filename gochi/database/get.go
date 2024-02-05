@@ -45,7 +45,7 @@ func GetClientByEmail(email string) (structs.Client, error) {
 
 // ===== For hairdressers =====
 func GetAllHairdressers() ([]structs.Hairdresser, error) {
-	rows, err := db.Query("SELECT uid, salonID, firstName, speciality FROM hairdressers")
+	rows, err := db.Query("SELECT uid, saloonID, firstName, speciality FROM hairdressers")
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func GetAllHairdressers() ([]structs.Hairdresser, error) {
 
 func GetHairdresserByUID(uid string) (structs.Hairdresser, error) {
 	var h structs.Hairdresser
-	err := db.QueryRow("SELECT uid, salonID, firstName, speciality FROM hairdressers WHERE uid=?", uid).Scan(&h.UID, &h.SaloonID, &h.FirstName, &h.Speciality)
+	err := db.QueryRow("SELECT uid, saloonID, firstName, speciality FROM hairdressers WHERE uid=?", uid).Scan(&h.UID, &h.SaloonID, &h.FirstName, &h.Speciality)
 	if err != nil {
 		return h, err
 	}
@@ -136,58 +136,30 @@ func GetSaloonByEmail(email string) (structs.HairSaloon, error) {
 	return s, nil
 }
 
-// ===== For reservations =====
-func GetAllReservations() ([]structs.Reservation, error) {
-	rows, err := db.Query("SELECT uid, salonID, clientID, hairdresserID, startHour, endHour, status FROM reservation")
+// ===== For appointmentss =====
+func GetAllAppointmentss() ([]structs.Appointments, error) {
+	rows, err := db.Query("SELECT uid, saloonID, clientID, hairdresserID, startHour, status FROM appointments")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var reservations []structs.Reservation
+	var appointmentss []structs.Appointments
 	for rows.Next() {
-		var r structs.Reservation
-		if err := rows.Scan(&r.UID, &r.SaloonID, &r.ClientID, &r.HairdresserID, &r.StartHour, &r.EndHour, &r.Status); err != nil {
+		var r structs.Appointments
+		if err := rows.Scan(&r.UID, &r.SaloonID, &r.ClientID, &r.HairdresserID, &r.StartHour, &r.Status); err != nil {
 			return nil, err
 		}
-		reservations = append(reservations, r)
+		appointmentss = append(appointmentss, r)
 	}
-	return reservations, nil
+	return appointmentss, nil
 }
 
-func GetReservationByUID(uid string) (structs.Reservation, error) {
-	var r structs.Reservation
-	err := db.QueryRow("SELECT uid, salonID, clientID, hairdresserID, startHour, endHour, status FROM reservation WHERE uid=?", uid).Scan(&r.UID, &r.SaloonID, &r.ClientID, &r.HairdresserID, &r.StartHour, &r.EndHour, &r.Status)
+func GetAppointmentsByUID(uid string) (structs.Appointments, error) {
+	var r structs.Appointments
+	err := db.QueryRow("SELECT uid, saloonID, clientID, hairdresserID, startHour, status FROM appointments WHERE uid=?", uid).Scan(&r.UID, &r.SaloonID, &r.ClientID, &r.HairdresserID, &r.StartHour, &r.Status)
 	if err != nil {
 		return r, err
 	}
 	return r, nil
-}
-
-// ===== For schedules =====
-func GetAllSchedules() ([]structs.Schedule, error) {
-	rows, err := db.Query("SELECT uid, hairdresserID, startHour, endHour, availability FROM schedules")
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var schedules []structs.Schedule
-	for rows.Next() {
-		var s structs.Schedule
-		if err := rows.Scan(&s.UID, &s.HairdresserID, &s.StartHour, &s.EndHour, &s.Availability); err != nil {
-			return nil, err
-		}
-		schedules = append(schedules, s)
-	}
-	return schedules, nil
-}
-
-func GetScheduleByUID(uid string) (structs.Schedule, error) {
-	var s structs.Schedule
-	err := db.QueryRow("SELECT uid, hairdresserID, startHour, endHour, availability FROM schedules WHERE uid=?", uid).Scan(&s.UID, &s.HairdresserID, &s.StartHour, &s.EndHour, &s.Availability)
-	if err != nil {
-		return s, err
-	}
-	return s, nil
 }

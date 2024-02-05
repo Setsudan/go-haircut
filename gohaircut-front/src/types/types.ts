@@ -30,13 +30,12 @@ export type Schedule = {
   availability: boolean;
 };
 
-export type Reservation = {
+export type Appointments = {
   uid: string;
   saloonId: HairSaloon | null;
   clientId: Client | null;
   hairdresserId: Hairdresser | null;
   startHour: string;
-  endHour: string;
   status: string;
 };
 

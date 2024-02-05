@@ -94,7 +94,7 @@ func createTables(db *sql.DB) {
 				email VARCHAR(255) NOT NULL,
 				phone VARCHAR(255) NOT NULL,
 				openingTime TIMESTAMP NOT NULL,
-				closingTime TIMESTAMP NOT NULL
+				closingTime TIMESTAMP NOT NULL,
 				password VARCHAR(255) NOT NULL
 				)`)
 	checkError(err, "HairSaloon")

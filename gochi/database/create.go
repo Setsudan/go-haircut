@@ -101,45 +101,22 @@ func CreateAdmin(adminData structs.CreateAdmin) (string, error) {
 }
 
 /*
- * CreateSchedule creates a new schedule in the database
- * @param scheduleData structs.Schedule
+ * CreateAppointments creates a new appointments in the database
+ * @param appointmentsData structs.Appointments
  * @return string, error
  */
-func CreateSchedule(scheduleData structs.Schedule) (string, error) {
+func CreateAppointments(appointmentsData structs.Appointments) (string, error) {
 	uid := uuid.New().String()
 
 	db := SetupDatabase()
 	defer db.Close()
 	_, err := db.Exec(`
-		INSERT INTO schedule (uid, hairdresserId, startHour, endHour, availability)
-		VALUES (?, ?, ?, ?, ?)
-	`, uid, scheduleData.HairdresserID, scheduleData.StartHour, scheduleData.EndHour, scheduleData.Availability)
-
-	if err != nil {
-		log.Printf("failed to create Schedule: %v", err)
-		return "", err
-	}
-
-	return uid, nil
-}
-
-/*
- * CreateReservation creates a new reservation in the database
- * @param reservationData structs.Reservation
- * @return string, error
- */
-func CreateReservation(reservationData structs.Reservation) (string, error) {
-	uid := uuid.New().String()
-
-	db := SetupDatabase()
-	defer db.Close()
-	_, err := db.Exec(`
-		INSERT INTO reservation (uid, saloonId, clientId, hairdresserId, startHour, endHour, status)
+		INSERT INTO appointments (uid, saloonId, clientId, hairdresserId, startHour, status)
 		VALUES (?, ?, ?, ?, ?, ?, ?)
-	`, uid, reservationData.SaloonID, reservationData.ClientID, reservationData.HairdresserID, reservationData.StartHour, reservationData.EndHour, reservationData.Status)
+	`, uid, appointmentsData.SaloonID, appointmentsData.ClientID, appointmentsData.HairdresserID, appointmentsData.StartHour, appointmentsData.Status)
 
 	if err != nil {
-		log.Printf("failed to create Reservation: %v", err)
+		log.Printf("failed to create Appointments: %v", err)
 		return "", err
 	}
 

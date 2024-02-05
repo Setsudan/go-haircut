@@ -63,13 +63,12 @@ type Schedule struct {
 	Availability  bool      `json:"availability"`
 }
 
-type Reservation struct {
+type Appointments struct {
 	UID           string    `json:"uid"`
 	SaloonID      string    `json:"saloonId"`
 	ClientID      string    `json:"clientId"`
 	HairdresserID string    `json:"hairdresserId"`
 	StartHour     time.Time `json:"startHour"`
-	EndHour       time.Time `json:"endHour"`
 	Status        string    `json:"status"`
 }
 
