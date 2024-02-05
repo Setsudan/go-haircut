@@ -28,6 +28,7 @@ type CreateSaloon struct {
 	Phone       string `json:"phone"`
 	OpeningTime string `json:"openingTime"`
 	ClosingTime string `json:"closingTime"`
+	Password    string `json:"password"`
 }
 
 type HairSaloon struct {
@@ -38,6 +39,7 @@ type HairSaloon struct {
 	Phone       string `json:"phone"`
 	OpeningTime string `json:"openingTime"`
 	ClosingTime string `json:"closingTime"`
+	Password    string `json:"password"`
 }
 
 type CreateHairdresser struct {

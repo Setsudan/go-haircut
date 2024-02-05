@@ -8,6 +8,11 @@ import (
 	"github.com/google/uuid"
 )
 
+/*
+ * CreateSaloon creates a new saloon in the database
+ * @param saloonData structs.CreateSaloon
+ * @return string, error
+ */
 func CreateSaloon(saloonData structs.CreateSaloon) (string, error) {
 	uid := uuid.New().String()
 
@@ -15,9 +20,9 @@ func CreateSaloon(saloonData structs.CreateSaloon) (string, error) {
 	defer db.Close()
 
 	_, err := db.Exec(`
-		INSERT INTO hairSaloon (uid, name, address, email, phone, openingtime, closingtime)
+		INSERT INTO hairSaloon (uid, name, address, email, phone, openingtime, closingtime, password)
 		VALUES (?, ?, ?, ?, ?, ?, ?)
-	`, uid, saloonData.Name, saloonData.Address, saloonData.Email, saloonData.Phone, saloonData.OpeningTime, saloonData.ClosingTime)
+	`, uid, saloonData.Name, saloonData.Address, saloonData.Email, saloonData.Phone, saloonData.OpeningTime, saloonData.ClosingTime, saloonData.Password)
 	if err != nil {
 		log.Printf("failed to create HairSaloon: %v", err)
 		return "", err
@@ -26,6 +31,11 @@ func CreateSaloon(saloonData structs.CreateSaloon) (string, error) {
 	return uid, nil
 }
 
+/*
+ * CreateClient creates a new client in the database
+ * @param client structs.CreateClient
+ * @return string, error
+ */
 func CreateClient(client structs.CreateClient) (string, error) {
 	uid := uuid.New().String()
 
@@ -44,6 +54,11 @@ func CreateClient(client structs.CreateClient) (string, error) {
 	return uid, nil
 }
 
+/*
+ * CreateHairdresser creates a new hairdresser in the database
+ * @param hairdresserData structs.CreateHairdresser
+ * @return string, error
+ */
 func CreateHairdresser(hairdresserData structs.CreateHairdresser) (string, error) {
 	uid := uuid.New().String()
 
@@ -62,6 +77,11 @@ func CreateHairdresser(hairdresserData structs.CreateHairdresser) (string, error
 	return uid, nil
 }
 
+/*
+ * CreateAdmin creates a new admin in the database
+ * @param adminData structs.CreateAdmin
+ * @return string, error
+ */
 func CreateAdmin(adminData structs.CreateAdmin) (string, error) {
 	uid := uuid.New().String()
 
@@ -80,6 +100,11 @@ func CreateAdmin(adminData structs.CreateAdmin) (string, error) {
 	return uid, nil
 }
 
+/*
+ * CreateSchedule creates a new schedule in the database
+ * @param scheduleData structs.Schedule
+ * @return string, error
+ */
 func CreateSchedule(scheduleData structs.Schedule) (string, error) {
 	uid := uuid.New().String()
 
@@ -98,6 +123,11 @@ func CreateSchedule(scheduleData structs.Schedule) (string, error) {
 	return uid, nil
 }
 
+/*
+ * CreateReservation creates a new reservation in the database
+ * @param reservationData structs.Reservation
+ * @return string, error
+ */
 func CreateReservation(reservationData structs.Reservation) (string, error) {
 	uid := uuid.New().String()
 
