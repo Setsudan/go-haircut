@@ -44,7 +44,6 @@ func SetupRouter() *chi.Mux {
 	routes.ClientsRoutes(r)
 	routes.HairdresserRoutes(r)
 	routes.SaloonRoutes(r)
-	routes.SchedulesRoutes(r)
 
 	return r
 }

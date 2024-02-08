@@ -1,8 +1,8 @@
 package database
 
-// ===== For reservations =====
-func UpdateReservationStatusToFalse(uid string) error {
-	stmt, err := db.Prepare("UPDATE reservation SET status=? WHERE uid=?")
+// ===== For appointmentss =====
+func UpdateAppointmentsStatusToFalse(uid string) error {
+	stmt, err := db.Prepare("UPDATE appointments SET status=? WHERE uid=?")
 	if err != nil {
 		return err
 	}

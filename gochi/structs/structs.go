@@ -28,6 +28,7 @@ type CreateSaloon struct {
 	Phone       string `json:"phone"`
 	OpeningTime string `json:"openingTime"`
 	ClosingTime string `json:"closingTime"`
+	Password    string `json:"password"`
 }
 
 type HairSaloon struct {
@@ -38,6 +39,7 @@ type HairSaloon struct {
 	Phone       string `json:"phone"`
 	OpeningTime string `json:"openingTime"`
 	ClosingTime string `json:"closingTime"`
+	Password    string `json:"password"`
 }
 
 type CreateHairdresser struct {
@@ -53,22 +55,20 @@ type Hairdresser struct {
 	Speciality string `json:"speciality"`
 }
 
-type Schedule struct {
-	UID           string    `json:"uid"`
-	HairdresserID string    `json:"hairdresserId"`
-	StartHour     time.Time `json:"startHour"`
-	EndHour       time.Time `json:"endHour"`
-	Availability  bool      `json:"availability"`
-}
-
-type Reservation struct {
+type Appointments struct {
 	UID           string    `json:"uid"`
 	SaloonID      string    `json:"saloonId"`
 	ClientID      string    `json:"clientId"`
 	HairdresserID string    `json:"hairdresserId"`
 	StartHour     time.Time `json:"startHour"`
-	EndHour       time.Time `json:"endHour"`
 	Status        string    `json:"status"`
+}
+
+type CreateAppointment struct {
+	SaloonID      string    `json:"saloonId"`
+	ClientID      string    `json:"clientId"`
+	HairdresserID string    `json:"hairdresserId"`
+	StartHour     time.Time `json:"startHour"`
 }
 
 type CreateAdmin struct {

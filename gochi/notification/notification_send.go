@@ -10,13 +10,14 @@ import (
 )
 
 type EmailParams struct {
-	ToEmail   string
-	Subject   string
-	HTMLFile  string
-	Name      string
-	Date      string
-	StartHour string
-	EndHour   string
+	ToEmail       string
+	Subject       string
+	SaloonName    string
+	Description   string
+	SaloonAddress string
+	Date          string
+	StartHour     string
+	EndHour       string
 }
 
 func SendEmail(params EmailParams) error {
@@ -28,22 +29,24 @@ func SendEmail(params EmailParams) error {
 	m.SetHeader("To", params.ToEmail)
 	m.SetHeader("Subject", params.Subject)
 
-	tmpl, err := template.ParseFiles(params.HTMLFile)
+	tmpl, err := template.ParseFiles("./notification/mail_content.gohtml")
 	if err != nil {
 		log.Println("Error parsing template:", err)
 		return err
 	}
 
 	data := struct {
-		Name      string
-		Date      string
-		StartHour string
-		EndHour   string
+		Date          string
+		StartHour     string
+		EndHour       string
+		SaloonName    string
+		Description   string
+		SaloonAddress string
 	}{
-		Name:      params.Name,
-		Date:      params.Date,
-		StartHour: params.StartHour,
-		EndHour:   params.EndHour,
+		Date:       params.Date,
+		StartHour:  params.StartHour,
+		EndHour:    params.EndHour,
+		SaloonName: params.SaloonName,
 	}
 
 	var tpl bytes.Buffer

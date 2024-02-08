@@ -1,7 +1,9 @@
 package database
 
 import (
+	"fmt"
 	"gohairdresser/structs"
+	"time"
 )
 
 var db = SetupDatabase()
@@ -43,9 +45,27 @@ func GetClientByEmail(email string) (structs.Client, error) {
 	return c, nil
 }
 
+func GetClientEmail(uid string) (string, error) {
+	var email string
+	err := db.QueryRow("SELECT email FROM clients WHERE uid=?", uid).Scan(&email)
+	if err != nil {
+		return "", err
+	}
+	return email, nil
+}
+
+func GetClientName(uid string) (string, error) {
+	var name string
+	err := db.QueryRow("SELECT name FROM clients WHERE uid=?", uid).Scan(&name)
+	if err != nil {
+		return "", err
+	}
+	return name, nil
+}
+
 // ===== For hairdressers =====
 func GetAllHairdressers() ([]structs.Hairdresser, error) {
-	rows, err := db.Query("SELECT uid, salonID, firstName, speciality FROM hairdressers")
+	rows, err := db.Query("SELECT uid, saloonID, firstName, speciality FROM hairdressers")
 	if err != nil {
 		return nil, err
 	}
@@ -64,11 +84,20 @@ func GetAllHairdressers() ([]structs.Hairdresser, error) {
 
 func GetHairdresserByUID(uid string) (structs.Hairdresser, error) {
 	var h structs.Hairdresser
-	err := db.QueryRow("SELECT uid, salonID, firstName, speciality FROM hairdressers WHERE uid=?", uid).Scan(&h.UID, &h.SaloonID, &h.FirstName, &h.Speciality)
+	err := db.QueryRow("SELECT uid, saloonID, firstName, speciality FROM hairdressers WHERE uid=?", uid).Scan(&h.UID, &h.SaloonID, &h.FirstName, &h.Speciality)
 	if err != nil {
 		return h, err
 	}
 	return h, nil
+}
+
+func IsHairdresserAvailable(hairdresserID string, startHour time.Time) (bool, error) {
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM appointments WHERE hairdresserID=? AND startHour=?", hairdresserID, startHour).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	return count == 0, nil
 }
 
 // ===== For admins =====
@@ -120,65 +149,111 @@ func GetAllHairSaloons() ([]structs.HairSaloon, error) {
 
 func GetHairSaloonByUID(uid string) (structs.HairSaloon, error) {
 	var s structs.HairSaloon
-	err := db.QueryRow("SELECT uid, name, address, email, phone, openingTime, closingTime FROM hairSaloon WHERE uid=?", uid).Scan(&s.UID, &s.Name, &s.Address, &s.Email, &s.Phone, &s.OpeningTime, &s.ClosingTime)
+	err := db.QueryRow("SELECT uid, name, address, email, phone, openingTime, closingTime, password FROM hairSaloon WHERE uid=?", uid).Scan(&s.UID, &s.Name, &s.Address, &s.Email, &s.Phone, &s.OpeningTime, &s.ClosingTime, &s.Password)
 	if err != nil {
 		return s, err
 	}
 	return s, nil
 }
 
-// ===== For reservations =====
-func GetAllReservations() ([]structs.Reservation, error) {
-	rows, err := db.Query("SELECT uid, salonID, clientID, hairdresserID, startHour, endHour, status FROM reservation")
+func GetSaloonByEmail(email string) (structs.HairSaloon, error) {
+	var s structs.HairSaloon
+	err := db.QueryRow("SELECT uid, name, address, email, phone, openingTime, closingTime, password FROM hairSaloon WHERE email=?", email).Scan(&s.UID, &s.Name, &s.Address, &s.Email, &s.Phone, &s.OpeningTime, &s.ClosingTime, &s.Password)
+	if err != nil {
+		return s, err
+	}
+	return s, nil
+}
+
+func GetSaloonEmail(uid string) (string, error) {
+	var email string
+	err := db.QueryRow("SELECT email FROM hairSaloon WHERE uid=?", uid).Scan(&email)
+	if err != nil {
+		return "", err
+	}
+	return email, nil
+}
+
+func GetSaloonName(uid string) (string, error) {
+	var name string
+	err := db.QueryRow("SELECT name FROM hairSaloon WHERE uid=?", uid).Scan(&name)
+	if err != nil {
+		return "", err
+	}
+	return name, nil
+}
+
+func GetSaloonAdress(uid string) (string, error) {
+	var address string
+	err := db.QueryRow("SELECT address FROM hairSaloon WHERE uid=?", uid).Scan(&address)
+	if err != nil {
+		return "", err
+	}
+	return address, nil
+}
+
+// ===== For appointmentss =====
+func GetAllAppointments() ([]structs.Appointments, error) {
+	rows, err := db.Query("SELECT uid, saloonID, clientID, hairdresserID, startHour, status FROM appointments")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var reservations []structs.Reservation
+	var appointments []structs.Appointments
 	for rows.Next() {
-		var r structs.Reservation
-		if err := rows.Scan(&r.UID, &r.SaloonID, &r.ClientID, &r.HairdresserID, &r.StartHour, &r.EndHour, &r.Status); err != nil {
+		var a structs.Appointments
+		var startHourStr string
+
+		if err := rows.Scan(&a.UID, &a.SaloonID, &a.ClientID, &a.HairdresserID, &startHourStr, &a.Status); err != nil {
 			return nil, err
 		}
-		reservations = append(reservations, r)
+
+		// Parse the startHour string into a time.Time object
+		layout := "2006-01-02 15:04:05"
+		a.StartHour, err = time.Parse(layout, startHourStr)
+		if err != nil {
+			return nil, fmt.Errorf("error parsing startHour: %w", err)
+		}
+
+		appointments = append(appointments, a)
 	}
-	return reservations, nil
+	return appointments, nil
 }
 
-func GetReservationByUID(uid string) (structs.Reservation, error) {
-	var r structs.Reservation
-	err := db.QueryRow("SELECT uid, salonID, clientID, hairdresserID, startHour, endHour, status FROM reservation WHERE uid=?", uid).Scan(&r.UID, &r.SaloonID, &r.ClientID, &r.HairdresserID, &r.StartHour, &r.EndHour, &r.Status)
+func GetAppointmentsByUID(uid string) (structs.Appointments, error) {
+	var r structs.Appointments
+	err := db.QueryRow("SELECT uid, saloonID, clientID, hairdresserID, startHour, status FROM appointments WHERE uid=?", uid).Scan(&r.UID, &r.SaloonID, &r.ClientID, &r.HairdresserID, &r.StartHour, &r.Status)
 	if err != nil {
 		return r, err
 	}
 	return r, nil
 }
 
-// ===== For schedules =====
-func GetAllSchedules() ([]structs.Schedule, error) {
-	rows, err := db.Query("SELECT uid, hairdresserID, startHour, endHour, availability FROM schedules")
+func GetAllAppointmentsForSaloon(saloonID string) ([]structs.Appointments, error) {
+	rows, err := db.Query("SELECT uid, saloonID, clientID, hairdresserID, startHour, status FROM appointments WHERE saloonID=?", saloonID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var schedules []structs.Schedule
+	var appointments []structs.Appointments
 	for rows.Next() {
-		var s structs.Schedule
-		if err := rows.Scan(&s.UID, &s.HairdresserID, &s.StartHour, &s.EndHour, &s.Availability); err != nil {
+		var a structs.Appointments
+		var startHourStr string
+
+		if err := rows.Scan(&a.UID, &a.SaloonID, &a.ClientID, &a.HairdresserID, &startHourStr, &a.Status); err != nil {
 			return nil, err
 		}
-		schedules = append(schedules, s)
-	}
-	return schedules, nil
-}
 
-func GetScheduleByUID(uid string) (structs.Schedule, error) {
-	var s structs.Schedule
-	err := db.QueryRow("SELECT uid, hairdresserID, startHour, endHour, availability FROM schedules WHERE uid=?", uid).Scan(&s.UID, &s.HairdresserID, &s.StartHour, &s.EndHour, &s.Availability)
-	if err != nil {
-		return s, err
+		// Parse the startHour string into a time.Time object
+		layout := "2006-01-02 15:04:05"
+		a.StartHour, err = time.Parse(layout, startHourStr)
+		if err != nil {
+			return nil, fmt.Errorf("error parsing startHour: %w", err)
+		}
+
+		appointments = append(appointments, a)
 	}
-	return s, nil
+	return appointments, nil
 }

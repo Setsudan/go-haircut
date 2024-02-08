@@ -4,11 +4,16 @@
   </head>
   <body>
     <h1>Rendez-vous chez Go Haircut</h1>
-    <p>Cher {{.Name}},</p>
+    <p>Bonjour,</p>
     <p>
-      Nous vous confirmons votre rendez-vous pour une coupe de cheveux chez Go
-      Haircut le {{.Date}} de {{.StartHour}} à {{.EndHour}}
+      Nous vous confirmons votre rendez-vous pour une coupe de cheveux chez {{.SaloonName}} le {{.Date}} de {{.StartHour}} à {{.EndHour}}
     </p>
+    <!-- Oui ça marche pas mais qui tente rien n'a rien
+    <p>
+      Vous pouvez ajouter cet événement à votre Google Agenda en cliquant sur le lien suivant :
+      <a href="https://calendar.google.com/calendar/render?action=create&text=Go%20Haircut%20Appointment&dates={{.Date}}T{{.StartHour}}%3A00%2F{{.Date}}T{{.EndHour}}%3A00&details={{.Description}}&location={{.SaloonAddress}}">Ajouter à Google Agenda</a>.
+    </p>
+    -->
     <p>
       Si vous avez des questions, n'hésitez pas à
       <a href="mailto:go.haircut2024@gmail.com">nous contacter</a>.
