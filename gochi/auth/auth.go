@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"gohairdresser/database"
 	"gohairdresser/structs"
 
@@ -79,6 +80,14 @@ func DeleteClient(uid string) error {
 //////////////////////////
 
 func CreateSaloon(saloon structs.CreateSaloon) (string, error) {
+	fmt.Println(saloon.Password)
+	hashedPassword, err := database.HashPassword(saloon.Password)
+	fmt.Println(hashedPassword)
+	if err != nil {
+		return "", err
+	}
+	fmt.Println(hashedPassword)
+	saloon.Password = hashedPassword
 	return database.CreateSaloon(saloon)
 }
 
@@ -101,6 +110,6 @@ func LoginAsSaloon(email, password string) (structs.HairSaloon, string, error) {
 	return acc, token, nil
 }
 
-/* func DeleteSaloon(uid string) error {
+func DeleteSaloon(uid string) error {
 	return database.DeleteSaloon(uid)
-} */
+}

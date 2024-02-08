@@ -15,6 +15,7 @@ func SaloonRoutes(r *chi.Mux) {
 		r.Post("/create", createSaloonRoute)
 		r.Get("/all", getAllHairSaloons)
 		r.Get("/{uid}", getHairSaloonByUID)
+		r.Delete("/{uid}", deleteSaloonRoute)
 	})
 }
 
@@ -61,4 +62,15 @@ func createSaloonRoute(w http.ResponseWriter, r *http.Request) {
 	}
 
 	SendResponse(w, http.StatusOK, "Success", "Saloon created successfully", createdSaloon, nil)
+}
+
+func deleteSaloonRoute(w http.ResponseWriter, r *http.Request) {
+	uid := chi.URLParam(r, "uid")
+	err := database.DeleteSaloon(uid)
+	if err != nil {
+		SendResponse(w, http.StatusInternalServerError, "Error", "Failed to delete saloon", nil, err)
+		return
+	}
+
+	SendResponse(w, http.StatusOK, "Success", "Saloon deleted successfully", nil, nil)
 }

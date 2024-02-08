@@ -93,8 +93,8 @@ func createTables(db *sql.DB) {
 				address VARCHAR(255) NOT NULL,
 				email VARCHAR(255) NOT NULL,
 				phone VARCHAR(255) NOT NULL,
-				openingTime TIMESTAMP NOT NULL,
-				closingTime TIMESTAMP NOT NULL,
+				openingTime TIME NOT NULL,
+				closingTime TIME NOT NULL,
 				password VARCHAR(255) NOT NULL
 				)`)
 	checkError(err, "HairSaloon")

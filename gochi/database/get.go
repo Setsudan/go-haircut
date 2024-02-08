@@ -120,7 +120,7 @@ func GetAllHairSaloons() ([]structs.HairSaloon, error) {
 
 func GetHairSaloonByUID(uid string) (structs.HairSaloon, error) {
 	var s structs.HairSaloon
-	err := db.QueryRow("SELECT uid, name, address, email, phone, openingTime, closingTime FROM hairSaloon WHERE uid=?", uid).Scan(&s.UID, &s.Name, &s.Address, &s.Email, &s.Phone, &s.OpeningTime, &s.ClosingTime)
+	err := db.QueryRow("SELECT uid, name, address, email, phone, openingTime, closingTime, password FROM hairSaloon WHERE uid=?", uid).Scan(&s.UID, &s.Name, &s.Address, &s.Email, &s.Phone, &s.OpeningTime, &s.ClosingTime, &s.Password)
 	if err != nil {
 		return s, err
 	}
@@ -129,7 +129,7 @@ func GetHairSaloonByUID(uid string) (structs.HairSaloon, error) {
 
 func GetSaloonByEmail(email string) (structs.HairSaloon, error) {
 	var s structs.HairSaloon
-	err := db.QueryRow("SELECT uid, name, address, email, phone, openingTime, closingTime FROM hairSaloon WHERE email=?", email).Scan(&s.UID, &s.Name, &s.Address, &s.Email, &s.Phone, &s.OpeningTime, &s.ClosingTime)
+	err := db.QueryRow("SELECT uid, name, address, email, phone, openingTime, closingTime, password FROM hairSaloon WHERE email=?", email).Scan(&s.UID, &s.Name, &s.Address, &s.Email, &s.Phone, &s.OpeningTime, &s.ClosingTime, &s.Password)
 	if err != nil {
 		return s, err
 	}

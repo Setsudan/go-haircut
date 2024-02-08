@@ -28,7 +28,6 @@ func LoginSaloon(email, password string) (structs.HairSaloon, error) {
 	if err != nil {
 		return structs.HairSaloon{}, ErrAccountNotFound
 	}
-
 	passValid := CheckPasswordHash(password, acc.Password)
 	if !passValid {
 		return structs.HairSaloon{}, ErrInvalidPassword
