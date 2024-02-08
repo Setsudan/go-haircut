@@ -45,6 +45,24 @@ func GetClientByEmail(email string) (structs.Client, error) {
 	return c, nil
 }
 
+func GetClientEmail(uid string) (string, error) {
+	var email string
+	err := db.QueryRow("SELECT email FROM clients WHERE uid=?", uid).Scan(&email)
+	if err != nil {
+		return "", err
+	}
+	return email, nil
+}
+
+func GetClientName(uid string) (string, error) {
+	var name string
+	err := db.QueryRow("SELECT name FROM clients WHERE uid=?", uid).Scan(&name)
+	if err != nil {
+		return "", err
+	}
+	return name, nil
+}
+
 // ===== For hairdressers =====
 func GetAllHairdressers() ([]structs.Hairdresser, error) {
 	rows, err := db.Query("SELECT uid, saloonID, firstName, speciality FROM hairdressers")
@@ -136,6 +154,33 @@ func GetSaloonByEmail(email string) (structs.HairSaloon, error) {
 		return s, err
 	}
 	return s, nil
+}
+
+func GetSaloonEmail(uid string) (string, error) {
+	var email string
+	err := db.QueryRow("SELECT email FROM hairSaloon WHERE uid=?", uid).Scan(&email)
+	if err != nil {
+		return "", err
+	}
+	return email, nil
+}
+
+func GetSaloonName(uid string) (string, error) {
+	var name string
+	err := db.QueryRow("SELECT name FROM hairSaloon WHERE uid=?", uid).Scan(&name)
+	if err != nil {
+		return "", err
+	}
+	return name, nil
+}
+
+func GetSaloonAdress(uid string) (string, error) {
+	var address string
+	err := db.QueryRow("SELECT address FROM hairSaloon WHERE uid=?", uid).Scan(&address)
+	if err != nil {
+		return "", err
+	}
+	return address, nil
 }
 
 // ===== For appointmentss =====

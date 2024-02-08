@@ -50,3 +50,18 @@ func DeleteHairdresser(uid string) error {
 
 	return nil
 }
+
+func DeleteAllAppointments() error {
+	db := SetupDatabase()
+	defer db.Close()
+
+	_, err := db.Exec(`
+		DELETE FROM appointments
+	`)
+	if err != nil {
+		log.Printf("failed to delete appointments: %v", err)
+		return err
+	}
+
+	return nil
+}

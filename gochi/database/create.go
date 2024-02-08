@@ -1,6 +1,7 @@
 package database
 
 import (
+	"gohairdresser/notification"
 	"gohairdresser/structs"
 	"log"
 
@@ -114,14 +115,7 @@ func CreateAdmin(adminData structs.CreateAdmin) (string, error) {
 func CreateAppointment(appointmentsData structs.CreateAppointment) (string, error) {
 	uid := uuid.New().String()
 	status := "Booked"
-	/*
-		type CreateAppointment struct {
-			SaloonID      string    `json:"saloonId"`
-			ClientID      string    `json:"clientId"`
-			HairdresserID string    `json:"hairdresserId"`
-			StartHour     time.Time `json:"startHour"`
-		}
-	*/
+
 	db := SetupDatabase()
 	defer db.Close()
 	_, err := db.Exec(`
@@ -133,6 +127,21 @@ func CreateAppointment(appointmentsData structs.CreateAppointment) (string, erro
 		log.Printf("failed to create Appointment: %v", err)
 		return "", err
 	}
+
+	clientMail, err := GetClientEmail(appointmentsData.ClientID)
+	appointmentStartHour := appointmentsData.StartHour.Format("15:04")
+	appointmentEndHour := appointmentsData.StartHour.Add(1).Format("15:04")
+	appointmentDate := appointmentsData.StartHour.Format("02 janvier 2006")
+	saloonName, err := GetSaloonName(appointmentsData.SaloonID)
+	// Send notification to the client
+	notification.SendEmail(notification.EmailParams{
+		ToEmail:    clientMail,
+		Subject:    "RDV accepté",
+		Date:       appointmentDate,
+		StartHour:  appointmentStartHour,
+		EndHour:    appointmentEndHour,
+		SaloonName: saloonName,
+	})
 
 	return uid, nil
 }

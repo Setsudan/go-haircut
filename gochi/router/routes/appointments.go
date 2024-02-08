@@ -23,6 +23,7 @@ func AppointmentsRoutes(r *chi.Mux) {
 		r.Patch("/saloonOpeningTime/{uid}", updateSaloonOpeningTime)
 		r.Patch("/saloonClosingTime/{uid}", updateSaloonClosingTime)
 		r.Post("/create", createAppointment)
+		r.Delete("/delete/all", deleteAllAppointments)
 	})
 }
 
@@ -159,4 +160,15 @@ func createAppointment(w http.ResponseWriter, r *http.Request) {
 	SendResponse(w, http.StatusOK, "Success", "Appointment created successfully", struct {
 		UID string `json:"uid"`
 	}{UID: uid}, nil)
+}
+
+// ===== DELETE =====
+func deleteAllAppointments(w http.ResponseWriter, r *http.Request) {
+	err := database.DeleteAllAppointments()
+	if err != nil {
+		SendResponse(w, http.StatusInternalServerError, "Error", "Error deleting appointments", nil, err)
+		return
+	}
+
+	SendResponse(w, http.StatusOK, "Success", "Appointments deleted successfully", emptyStruct, nil)
 }
