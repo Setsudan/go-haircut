@@ -1,6 +1,7 @@
 package database
 
 import (
+	"errors"
 	"gohairdresser/notification"
 	"gohairdresser/structs"
 	"log"
@@ -8,6 +9,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
+
+var ErrHairdresserNotAvailable = errors.New("hairdresser not available")
 
 /*
  * CreateSaloon creates a new saloon in the database
@@ -116,6 +119,17 @@ func CreateAppointment(appointmentsData structs.CreateAppointment) (string, erro
 	uid := uuid.New().String()
 	status := "Booked"
 
+	// We first need to check if the hairdresser is available
+	// If not, we return an error
+	isScheduleAvailable, scheduleErr := IsHairdresserAvailable(appointmentsData.HairdresserID, appointmentsData.StartHour)
+	if scheduleErr != nil {
+		log.Printf("failed to check hairdresser availability: %v", scheduleErr)
+		return "", scheduleErr
+	}
+	if !isScheduleAvailable {
+		return "", ErrHairdresserNotAvailable
+	}
+
 	db := SetupDatabase()
 	defer db.Close()
 	_, err := db.Exec(`
@@ -129,18 +143,33 @@ func CreateAppointment(appointmentsData structs.CreateAppointment) (string, erro
 	}
 
 	clientMail, err := GetClientEmail(appointmentsData.ClientID)
+	if err != nil {
+		log.Printf("failed to get client email: %v", err)
+		return "", err
+	}
 	appointmentStartHour := appointmentsData.StartHour.Format("15:04")
 	appointmentEndHour := appointmentsData.StartHour.Add(1).Format("15:04")
 	appointmentDate := appointmentsData.StartHour.Format("02 janvier 2006")
 	saloonName, err := GetSaloonName(appointmentsData.SaloonID)
+	if err != nil {
+		log.Printf("failed to get saloon name: %v", err)
+		return "", err
+	}
+	saloonAdress, err := GetSaloonAdress(appointmentsData.SaloonID)
+	if err != nil {
+		log.Printf("failed to get saloon address: %v", err)
+		return "", err
+	}
 	// Send notification to the client
 	notification.SendEmail(notification.EmailParams{
-		ToEmail:    clientMail,
-		Subject:    "RDV accepté",
-		Date:       appointmentDate,
-		StartHour:  appointmentStartHour,
-		EndHour:    appointmentEndHour,
-		SaloonName: saloonName,
+		ToEmail:       clientMail,
+		Subject:       "RDV accepté",
+		Date:          appointmentDate,
+		StartHour:     appointmentStartHour,
+		EndHour:       appointmentEndHour,
+		SaloonName:    saloonName,
+		Description:   `Rendez vous de coiffure, le {{.Date}} à {{.StartHour}} pour une durée d'une heure.`,
+		SaloonAddress: saloonAdress,
 	})
 
 	return uid, nil

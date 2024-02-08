@@ -10,12 +10,14 @@ import (
 )
 
 type EmailParams struct {
-	ToEmail    string
-	Subject    string
-	SaloonName string
-	Date       string
-	StartHour  string
-	EndHour    string
+	ToEmail       string
+	Subject       string
+	SaloonName    string
+	Description   string
+	SaloonAddress string
+	Date          string
+	StartHour     string
+	EndHour       string
 }
 
 func SendEmail(params EmailParams) error {
@@ -34,10 +36,12 @@ func SendEmail(params EmailParams) error {
 	}
 
 	data := struct {
-		Date       string
-		StartHour  string
-		EndHour    string
-		SaloonName string
+		Date          string
+		StartHour     string
+		EndHour       string
+		SaloonName    string
+		Description   string
+		SaloonAddress string
 	}{
 		Date:       params.Date,
 		StartHour:  params.StartHour,
