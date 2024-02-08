@@ -71,7 +71,7 @@ func CreateHairdresser(hairdresserData structs.CreateHairdresser) (string, error
 	db := SetupDatabase()
 	defer db.Close()
 	_, err := db.Exec(`
-		INSERT INTO hairdresser (uid, saloonId, firstName, speciality)
+		INSERT INTO hairdressers (uid, saloonId, firstName, speciality)
 		VALUES (?, ?, ?, ?)
 	`, uid, hairdresserData.SaloonID, hairdresserData.FirstName, hairdresserData.Speciality)
 
