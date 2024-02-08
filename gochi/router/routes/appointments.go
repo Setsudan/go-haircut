@@ -1,7 +1,9 @@
 package routes
 
 import (
+	"encoding/json"
 	"gohairdresser/database"
+	"gohairdresser/structs"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -20,12 +22,13 @@ func AppointmentsRoutes(r *chi.Mux) {
 		r.Patch("/saloonPhone/{uid}", updateSaloonPhone)
 		r.Patch("/saloonOpeningTime/{uid}", updateSaloonOpeningTime)
 		r.Patch("/saloonClosingTime/{uid}", updateSaloonClosingTime)
+		r.Post("/create", createAppointment)
 	})
 }
 
 // ===== GET =====
 func getAllAppointments(w http.ResponseWriter, r *http.Request) {
-	data, err := database.GetAllAppointmentss()
+	data, err := database.GetAllAppointments()
 	if err != nil {
 		SendResponse(w, http.StatusInternalServerError, "Error", "Error retrieving appointments", nil, err)
 		return
@@ -128,4 +131,32 @@ func updateSaloonClosingTime(w http.ResponseWriter, r *http.Request) {
 	}
 
 	SendResponse(w, http.StatusOK, "Success", "Saloon closing time updated successfully", emptyStruct, nil)
+}
+
+// ===== CREATE =====
+func createAppointment(w http.ResponseWriter, r *http.Request) {
+	var appointment structs.CreateAppointment
+	// Check if the request body is empty
+	if r.Body == nil {
+		SendResponse(w, http.StatusBadRequest, "Error", "Invalid request payload", nil, nil)
+		return
+	}
+
+	// Decode the request body into the appointment struct
+	err := json.NewDecoder(r.Body).Decode(&appointment)
+	if err != nil {
+		SendResponse(w, http.StatusBadRequest, "Error", "Invalid request payload", nil, err)
+		return
+	}
+
+	// Create the appointment
+	uid, err := database.CreateAppointment(appointment)
+	if err != nil {
+		SendResponse(w, http.StatusInternalServerError, "Error", "Error creating appointment", nil, err)
+		return
+	}
+
+	SendResponse(w, http.StatusOK, "Success", "Appointment created successfully", struct {
+		UID string `json:"uid"`
+	}{UID: uid}, nil)
 }

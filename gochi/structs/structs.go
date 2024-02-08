@@ -55,14 +55,6 @@ type Hairdresser struct {
 	Speciality string `json:"speciality"`
 }
 
-type Schedule struct {
-	UID           string    `json:"uid"`
-	HairdresserID string    `json:"hairdresserId"`
-	StartHour     time.Time `json:"startHour"`
-	EndHour       time.Time `json:"endHour"`
-	Availability  bool      `json:"availability"`
-}
-
 type Appointments struct {
 	UID           string    `json:"uid"`
 	SaloonID      string    `json:"saloonId"`
@@ -70,6 +62,13 @@ type Appointments struct {
 	HairdresserID string    `json:"hairdresserId"`
 	StartHour     time.Time `json:"startHour"`
 	Status        string    `json:"status"`
+}
+
+type CreateAppointment struct {
+	SaloonID      string    `json:"saloonId"`
+	ClientID      string    `json:"clientId"`
+	HairdresserID string    `json:"hairdresserId"`
+	StartHour     time.Time `json:"startHour"`
 }
 
 type CreateAdmin struct {

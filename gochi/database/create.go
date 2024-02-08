@@ -111,18 +111,26 @@ func CreateAdmin(adminData structs.CreateAdmin) (string, error) {
  * @param appointmentsData structs.Appointments
  * @return string, error
  */
-func CreateAppointments(appointmentsData structs.Appointments) (string, error) {
+func CreateAppointment(appointmentsData structs.CreateAppointment) (string, error) {
 	uid := uuid.New().String()
-
+	status := "Booked"
+	/*
+		type CreateAppointment struct {
+			SaloonID      string    `json:"saloonId"`
+			ClientID      string    `json:"clientId"`
+			HairdresserID string    `json:"hairdresserId"`
+			StartHour     time.Time `json:"startHour"`
+		}
+	*/
 	db := SetupDatabase()
 	defer db.Close()
 	_, err := db.Exec(`
 		INSERT INTO appointments (uid, saloonId, clientId, hairdresserId, startHour, status)
-		VALUES (?, ?, ?, ?, ?, ?, ?)
-	`, uid, appointmentsData.SaloonID, appointmentsData.ClientID, appointmentsData.HairdresserID, appointmentsData.StartHour, appointmentsData.Status)
+		VALUES (?, ?, ?, ?, ?, ?)
+	`, uid, appointmentsData.SaloonID, appointmentsData.ClientID, appointmentsData.HairdresserID, appointmentsData.StartHour, status)
 
 	if err != nil {
-		log.Printf("failed to create Appointments: %v", err)
+		log.Printf("failed to create Appointment: %v", err)
 		return "", err
 	}
 

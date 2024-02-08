@@ -1,7 +1,9 @@
 package database
 
 import (
+	"fmt"
 	"gohairdresser/structs"
+	"time"
 )
 
 var db = SetupDatabase()
@@ -137,22 +139,32 @@ func GetSaloonByEmail(email string) (structs.HairSaloon, error) {
 }
 
 // ===== For appointmentss =====
-func GetAllAppointmentss() ([]structs.Appointments, error) {
+func GetAllAppointments() ([]structs.Appointments, error) {
 	rows, err := db.Query("SELECT uid, saloonID, clientID, hairdresserID, startHour, status FROM appointments")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var appointmentss []structs.Appointments
+	var appointments []structs.Appointments
 	for rows.Next() {
-		var r structs.Appointments
-		if err := rows.Scan(&r.UID, &r.SaloonID, &r.ClientID, &r.HairdresserID, &r.StartHour, &r.Status); err != nil {
+		var a structs.Appointments
+		var startHourStr string
+
+		if err := rows.Scan(&a.UID, &a.SaloonID, &a.ClientID, &a.HairdresserID, &startHourStr, &a.Status); err != nil {
 			return nil, err
 		}
-		appointmentss = append(appointmentss, r)
+
+		// Parse the startHour string into a time.Time object
+		layout := "2006-01-02 15:04:05"
+		a.StartHour, err = time.Parse(layout, startHourStr)
+		if err != nil {
+			return nil, fmt.Errorf("error parsing startHour: %w", err)
+		}
+
+		appointments = append(appointments, a)
 	}
-	return appointmentss, nil
+	return appointments, nil
 }
 
 func GetAppointmentsByUID(uid string) (structs.Appointments, error) {
