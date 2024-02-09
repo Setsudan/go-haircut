@@ -27,7 +27,7 @@ This project is aimed at creating a booking management system inspired by Planit
 
 This project is a collaborative effort among students for a school assignment. The team members and their contributions are listed below:
 
-- **Ethan Launay** - @Setsudashi
+- **Ethan Launay** - @Setsudan
 - **Arsene Dobrovolskyy** - @Daiiruin
 - **Hugo Granier** - @hugogranier
 - **Sandie Ouallet** - @Ouallet-Sandie
