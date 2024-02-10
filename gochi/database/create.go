@@ -54,7 +54,7 @@ func CreateClient(client structs.CreateClient) (string, error) {
 	_, err := db.Exec(`
 		INSERT INTO clients (uid, email, age, password)
 		VALUES (?, ?, ?, ?)
-	`, uid, client.Email, client.Age, client.Password)
+	`, uid, client.Email, 20, client.Password)
 
 	if err != nil {
 		log.Printf("failed to create Client: %v", err)

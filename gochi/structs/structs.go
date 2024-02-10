@@ -6,7 +6,6 @@ import (
 
 type CreateClient struct {
 	Email    string `json:"email"`
-	Age      int    `json:"age"`
 	Password string `json:"password"`
 }
 

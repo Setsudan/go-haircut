@@ -15,7 +15,7 @@ func AppointmentsRoutes(r *chi.Mux) {
 	r.Route("/appointments", func(r chi.Router) {
 		r.Get("/all", getAllAppointments)
 		r.Get("/{uid}", getAppointmentByUID)
-		r.Patch("/{uid}", updateAppointmentsStatusToFalse)
+		r.Patch("/cancel/{uid}", updateAppointmentsStatusToFalse)
 		r.Patch("/saloonName/{uid}", updateSaloonName)
 		r.Patch("/saloonAddress/{uid}", updateSaloonAddress)
 		r.Patch("/saloonEmail/{uid}", updateSaloonEmail)

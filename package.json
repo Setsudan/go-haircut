@@ -1,12 +1,19 @@
 {
-  "name": "go-food",
+  "name": "go-haircut",
   "version": "0.0.1",
   "description": "Ce projet vise à développer une solution de gestion de réservations inspirée par\r Planity, spécifiquement conçue pour les salons de coiffure. L'objectif est de\r faciliter la prise de rendez-vous pour les clients tout en optimisant la gestion\r des créneaux horaires pour les salons.",
   "scripts": {
-    "install:backend": "cd gochi && go get && go mod tidy",
-    "run:backend": "cd gochi && go run main.go"
+    "install:backend": "cd gochi && go get",
+    "install:frontend": "cd frontend && npm install",
+    "start:backend": "cd gochi && go run main.go",
+    "start:frontend": "cd frontend && npm run dev",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "install:all": "npm install && npm run install:backend && npm run install:frontend"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
 }

@@ -4,19 +4,16 @@
 
 This project is aimed at creating a booking management system inspired by Planity, tailored specifically for hair salons. The primary goal is to streamline the appointment booking process for customers while enhancing slot management for salons.
 
-## Key Features
+## How To use
 
-### For Hair Salons
-
-- **Opening Slot Management**: Salons can set and modify their operating hours, including the specific availability of each hairstylist.
-
-### For Customers
-
-- **Slot Booking**: Once logged in, customers can view available slots and book an appointment that suits their schedule.
-
-### For Administrators
-
-- **Monitoring and Management**: Administrators have access to a dashboard for tracking activities, managing user accounts, and making necessary adjustments.
+- clone the repository `git clone https://github.com/setsudan/go-haircut.git`
+- install dependencies either:
+    - running `npm run install:all`
+    - by going in `frontend` directory and then run `npm install`, and then go in the `backend` directory and then run `go get`
+- start the project by either:
+    - run `npm run start` in the root directory (doesn't work in powershell terminals)
+    - or run `npm run start:backend` and in another terminal run `npm run start:frontend`
+    - or open the `frontend` directory run `npm run dev` and then open another terminal in the `backend` directory and run `go run main.go`
 
 ## Technologies Employed
 
