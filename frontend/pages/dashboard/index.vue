@@ -12,12 +12,12 @@ definePageMeta({
 })
 </script>
 <template>
-    <pre>
-        {
-            "authStore.token": "{{ authStore.token }}",
-            "authStore.uid": "{{ authStore.uid }}",
-            "authStore.userType": "{{ authStore.userType }}"
-        }
-    </pre>
+    <main id="saloon" v-if="authStore.userType === 'saloon'">
+        <h1>Dashboard</h1>
+        <p>Welcome to your dashboard</p>
+        <nuxt-link to="/dashboard/create-hairdresser">
+            <button>Create Hairdresser</button>
+        </nuxt-link>
+    </main>
     <button @click="logout">Logout</button>
 </template>

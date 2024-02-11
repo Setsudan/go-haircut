@@ -18,18 +18,6 @@ export const login = async (email: string, password: string, type: string): Prom
     return data;
 }
 
-/*
-{
-    "name": "Solomon Saloon",
-    "address": "45 bagdad street, 85000 Shelfey",
-    "email": "contact@solomon.com",
-    "phone": "0557849654",
-    "openingTime": "09:00:00",
-    "closingTime": "18:00:00",
-    "password": "Test123456789!"
-}
-*/
-
 type PossibleBody = {
     email: string;
     password: string;
