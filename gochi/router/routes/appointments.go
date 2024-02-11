@@ -137,20 +137,12 @@ func updateSaloonClosingTime(w http.ResponseWriter, r *http.Request) {
 // ===== CREATE =====
 func createAppointment(w http.ResponseWriter, r *http.Request) {
 	var appointment structs.CreateAppointment
-	// Check if the request body is empty
-	if r.Body == nil {
-		SendResponse(w, http.StatusBadRequest, "Error", "Invalid request payload", nil, nil)
-		return
-	}
-
-	// Decode the request body into the appointment struct
 	err := json.NewDecoder(r.Body).Decode(&appointment)
 	if err != nil {
 		SendResponse(w, http.StatusBadRequest, "Error", "Invalid request payload", nil, err)
 		return
 	}
 
-	// Create the appointment
 	uid, err := database.CreateAppointment(appointment)
 	if err != nil {
 		SendResponse(w, http.StatusInternalServerError, "Error", "Error creating appointment", nil, err)

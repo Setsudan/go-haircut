@@ -2,9 +2,11 @@ package routes
 
 import (
 	"encoding/json"
+	"fmt"
 	"gohairdresser/database"
 	"gohairdresser/structs"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -14,6 +16,7 @@ func HairdresserRoutes(r *chi.Mux) {
 		r.Get("/all", getAllHairdressers)
 		r.Get("/{uid}", getHairdresserByUID)
 		r.Post("/create", createHairdresser)
+		r.Post("/isAvailable", isHairdresserAvailable)
 		r.Delete("/delete/{uid}", deleteHairdresser)
 		//r.Put("/update/{uid}", updateHairdresser)
 	})
@@ -88,4 +91,42 @@ func deleteHairdresser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	SendResponse(w, http.StatusOK, "Success", "Hairdresser deleted successfully", nil, nil)
+}
+
+func isHairdresserAvailable(w http.ResponseWriter, r *http.Request) {
+	type HairdresserAvailability struct {
+		HairdresserID   string `json:"hairdresserID"`
+		StartHour       string `json:"startHour"`
+		AppointmentDate string `json:"appointmentDate"`
+	}
+
+	var data HairdresserAvailability
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		SendResponse(w, http.StatusBadRequest, "Error", "Invalid request payload", nil, err)
+		return
+	}
+	// Parse appointment date without the time component
+	layout := "2006-01-02" // Date layout without time component
+	appointmentDate, err := time.Parse(layout, data.AppointmentDate)
+	if err != nil {
+		SendResponse(w, http.StatusInternalServerError, "Error", "Error parsing appointment date", nil, err)
+		return
+	}
+
+	// Log parsed appointment date for debugging
+	fmt.Println("Parsed appointment date:", appointmentDate)
+
+	// Check the year parsed from the date
+	fmt.Println("Parsed year:", appointmentDate.Year())
+
+	available, err := database.IsHairdresserAvailable(data.HairdresserID, appointmentDate, appointmentDate)
+	if err != nil {
+		SendResponse(w, http.StatusInternalServerError, "Error", "Error checking hairdresser availability", nil, err)
+		return
+	}
+
+	SendResponse(w, http.StatusOK, "Success", "Hairdresser availability checked successfully", struct {
+		Available bool `json:"available"`
+	}{Available: available}, nil)
 }

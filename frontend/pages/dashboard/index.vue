@@ -19,5 +19,12 @@ definePageMeta({
             <button>Create Hairdresser</button>
         </nuxt-link>
     </main>
+    <main id="client" v-else-if="authStore.userType === 'client'">
+        <h1>Dashboard</h1>
+        <p>Welcome to your dashboard</p>
+        <nuxt-link to="/dashboard/take-appointment">
+            <button>Take Appointment</button>
+        </nuxt-link>
+    </main>
     <button @click="logout">Logout</button>
 </template>

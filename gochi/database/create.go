@@ -2,6 +2,7 @@ package database
 
 import (
 	"errors"
+	"fmt"
 	"gohairdresser/notification"
 	"gohairdresser/structs"
 	"log"
@@ -110,12 +111,13 @@ func CreateAdmin(adminData structs.CreateAdmin) (string, error) {
  * @return string, error
  */
 func CreateAppointment(appointmentsData structs.CreateAppointment) (string, error) {
+	fmt.Print("Database CreateAppointment")
 	uid := uuid.New().String()
 	status := "Booked"
 
 	// We first need to check if the hairdresser is available
 	// If not, we return an error
-	isScheduleAvailable, scheduleErr := IsHairdresserAvailable(appointmentsData.HairdresserID, appointmentsData.StartHour)
+	isScheduleAvailable, scheduleErr := IsHairdresserAvailable(appointmentsData.HairdresserID, appointmentsData.StartHour, appointmentsData.AppointmentsDate)
 	if scheduleErr != nil {
 		log.Printf("failed to check hairdresser availability: %v", scheduleErr)
 		return "", scheduleErr

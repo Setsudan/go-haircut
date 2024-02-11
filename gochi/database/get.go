@@ -91,9 +91,9 @@ func GetHairdresserByUID(uid string) (structs.Hairdresser, error) {
 	return h, nil
 }
 
-func IsHairdresserAvailable(hairdresserID string, startHour time.Time) (bool, error) {
+func IsHairdresserAvailable(hairdresserID string, startHour time.Time, appointmentDate time.Time) (bool, error) {
 	var count int
-	err := db.QueryRow("SELECT COUNT(*) FROM appointments WHERE hairdresserID=? AND startHour=?", hairdresserID, startHour).Scan(&count)
+	err := db.QueryRow("SELECT COUNT(*) FROM appointments WHERE hairdresserID=? AND startHour BETWEEN ? AND ?", hairdresserID, startHour, startHour.Add(30*time.Minute)).Scan(&count)
 	if err != nil {
 		return false, err
 	}
@@ -190,6 +190,24 @@ func GetSaloonAdress(uid string) (string, error) {
 		return "", err
 	}
 	return address, nil
+}
+
+func GetAllHairdressersFromSaloon(saloonID string) ([]structs.Hairdresser, error) {
+	rows, err := db.Query("SELECT uid, saloonID, firstName, speciality FROM hairdressers WHERE saloonID=?", saloonID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var hairdressers []structs.Hairdresser
+	for rows.Next() {
+		var h structs.Hairdresser
+		if err := rows.Scan(&h.UID, &h.SaloonID, &h.FirstName, &h.Speciality); err != nil {
+			return nil, err
+		}
+		hairdressers = append(hairdressers, h)
+	}
+	return hairdressers, nil
 }
 
 // ===== For appointmentss =====
