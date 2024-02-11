@@ -120,7 +120,7 @@ func isHairdresserAvailable(w http.ResponseWriter, r *http.Request) {
 	// Check the year parsed from the date
 	fmt.Println("Parsed year:", appointmentDate.Year())
 
-	available, err := database.IsHairdresserAvailable(data.HairdresserID, appointmentDate, appointmentDate)
+	available, err := database.IsHairdresserAvailable(data.HairdresserID, data.StartHour, appointmentDate)
 	if err != nil {
 		SendResponse(w, http.StatusInternalServerError, "Error", "Error checking hairdresser availability", nil, err)
 		return

@@ -2,9 +2,11 @@ package routes
 
 import (
 	"encoding/json"
+	"fmt"
 	"gohairdresser/database"
 	"gohairdresser/structs"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -136,14 +138,39 @@ func updateSaloonClosingTime(w http.ResponseWriter, r *http.Request) {
 
 // ===== CREATE =====
 func createAppointment(w http.ResponseWriter, r *http.Request) {
-	var appointment structs.CreateAppointment
+	type CreateAppointment struct {
+		SaloonID         string `json:"saloonId"`
+		ClientID         string `json:"clientId"`
+		HairdresserID    string `json:"hairdresserId"`
+		StartHour        string `json:"startHour"`
+		AppointmentsDate string `json:"appointmentDate"`
+	}
+
+	var appointment CreateAppointment
+	fmt.Println("received request to create appointment")
 	err := json.NewDecoder(r.Body).Decode(&appointment)
 	if err != nil {
 		SendResponse(w, http.StatusBadRequest, "Error", "Invalid request payload", nil, err)
 		return
 	}
+	// Parse appointment date without the time component
+	layout := "2006-01-02"
+	appointmentDate, err := time.Parse(layout, appointment.AppointmentsDate)
+	if err != nil {
+		SendResponse(w, http.StatusInternalServerError, "Error", "Error parsing appointment date", nil, err)
+		return
+	}
+	fmt.Println("decoded request to create appointment")
 
-	uid, err := database.CreateAppointment(appointment)
+	fmt.Print("Trying Database CreateAppointment")
+	appointmentData := structs.CreateAppointment{
+		SaloonID:         appointment.SaloonID,
+		ClientID:         appointment.ClientID,
+		HairdresserID:    appointment.HairdresserID,
+		StartHour:        appointment.StartHour,
+		AppointmentsDate: appointmentDate,
+	}
+	uid, err := database.CreateAppointment(appointmentData)
 	if err != nil {
 		SendResponse(w, http.StatusInternalServerError, "Error", "Error creating appointment", nil, err)
 		return

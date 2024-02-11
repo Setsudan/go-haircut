@@ -6,6 +6,7 @@ import (
 	"gohairdresser/notification"
 	"gohairdresser/structs"
 	"log"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
@@ -115,23 +116,20 @@ func CreateAppointment(appointmentsData structs.CreateAppointment) (string, erro
 	uid := uuid.New().String()
 	status := "Booked"
 
-	// We first need to check if the hairdresser is available
-	// If not, we return an error
-	isScheduleAvailable, scheduleErr := IsHairdresserAvailable(appointmentsData.HairdresserID, appointmentsData.StartHour, appointmentsData.AppointmentsDate)
-	if scheduleErr != nil {
-		log.Printf("failed to check hairdresser availability: %v", scheduleErr)
-		return "", scheduleErr
+	startHourTime, err := time.Parse("15:04", appointmentsData.StartHour)
+	if err != nil {
+		log.Printf("failed to parse start hour: %v", err)
+		return "", err
 	}
-	if !isScheduleAvailable {
-		return "", ErrHairdresserNotAvailable
-	}
+
+	formattedStartHour := startHourTime.Format("15:04:05") // Assuming the format expected by SQL is "15:04:05"
 
 	db := SetupDatabase()
 	defer db.Close()
-	_, err := db.Exec(`
-		INSERT INTO appointments (uid, saloonId, clientId, hairdresserId, startHour, status)
-		VALUES (?, ?, ?, ?, ?, ?)
-	`, uid, appointmentsData.SaloonID, appointmentsData.ClientID, appointmentsData.HairdresserID, appointmentsData.StartHour, status)
+	_, err = db.Exec(`
+    INSERT INTO appointments (uid, saloonId, clientId, hairdresserId, startHour, status, appointmentDate)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+`, uid, appointmentsData.SaloonID, appointmentsData.ClientID, appointmentsData.HairdresserID, formattedStartHour, status, appointmentsData.AppointmentsDate)
 
 	if err != nil {
 		log.Printf("failed to create Appointment: %v", err)
@@ -143,9 +141,13 @@ func CreateAppointment(appointmentsData structs.CreateAppointment) (string, erro
 		log.Printf("failed to get client email: %v", err)
 		return "", err
 	}
-	appointmentStartHour := appointmentsData.StartHour.Format("15:04")
-	appointmentEndHour := appointmentsData.StartHour.Add(1).Format("15:04")
-	appointmentDate := appointmentsData.StartHour.Format("02 janvier 2006")
+	appointmentStartTime, parseErr := time.Parse("15:04", appointmentsData.StartHour)
+	if parseErr != nil {
+		log.Printf("failed to parse appointment start time: %v", parseErr)
+		return "", parseErr
+	}
+	appointmentEndHour := appointmentStartTime.Add(time.Hour).Format("15:04")
+	appointmentDate := appointmentStartTime.Format("02 janvier 2006")
 	saloonName, err := GetSaloonName(appointmentsData.SaloonID)
 	if err != nil {
 		log.Printf("failed to get saloon name: %v", err)
@@ -161,7 +163,7 @@ func CreateAppointment(appointmentsData structs.CreateAppointment) (string, erro
 		ToEmail:       clientMail,
 		Subject:       "RDV accepté",
 		Date:          appointmentDate,
-		StartHour:     appointmentStartHour,
+		StartHour:     appointmentsData.StartHour,
 		EndHour:       appointmentEndHour,
 		SaloonName:    saloonName,
 		Description:   `Rendez vous de coiffure, le {{.Date}} à {{.StartHour}} pour une durée d'une heure.`,

@@ -59,17 +59,17 @@ type Appointments struct {
 	SaloonID         string    `json:"saloonId"`
 	ClientID         string    `json:"clientId"`
 	HairdresserID    string    `json:"hairdresserId"`
-	StartHour        time.Time `json:"startHour"`
+	StartHour        string    `json:"startHour"`
 	Status           string    `json:"status"`
-	AppointmentsDate time.Time `json:"date"`
+	AppointmentsDate time.Time `json:"appointmentDate"`
 }
 
 type CreateAppointment struct {
 	SaloonID         string    `json:"saloonId"`
 	ClientID         string    `json:"clientId"`
 	HairdresserID    string    `json:"hairdresserId"`
-	StartHour        time.Time `json:"startHour"`
-	AppointmentsDate time.Time `json:"date"`
+	StartHour        string    `json:"startHour"`
+	AppointmentsDate time.Time `json:"appointmentDate"`
 }
 
 type CreateAdmin struct {
