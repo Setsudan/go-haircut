@@ -2,17 +2,14 @@ import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
-        jwt: null as string | null
+        token: '',
+        uid: '',
+        userType: '',
     }),
+
     getters: {
-        isAuthenticated: (state) => !!state.jwt
-    },
-    actions: {
-        setJWT(jwt: string) {
-            this.jwt = jwt
+        isAuthenticated(): boolean {
+            return this.token !== ''
         },
-        clearJWT() {
-            this.jwt = null
-        }
-    }
+    },
 })

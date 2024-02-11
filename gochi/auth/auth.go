@@ -26,16 +26,6 @@ func GenerateSaloonJWT(saloon structs.HairSaloon) (string, error) {
 	return token.SignedString([]byte("secret"))
 }
 
-func GetIdFromToken(tokenString string) (string, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte("secret"), nil
-	})
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return claims["client_id"].(string), nil
-	}
-	return "", err
-}
-
 // //////////////////////
 // Client operations //
 // ////////////////////

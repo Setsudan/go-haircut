@@ -1,11 +1,21 @@
 <template>
     <main>
         <h1>Login</h1>
-        <form @submit.prevent="login">
+        <form @submit.prevent="tryLogin">
             <label for="email">Email:</label>
             <input type="email" id="email" v-model="email" required>
             <label for="password">Password:</label>
             <input type="password" id="password" v-model="password" required>
+            <div>
+                <h3>
+                    Login as a:
+                </h3>
+                <label for="client">Client</label>
+                <input type="radio" id="client" value="client" v-model="userType">
+                <label for="salon">Saloon</label>
+                <input type="radio" id="salon" value="saloon" v-model="userType">
+            </div>
+            <span v-if="error">{{ error }}</span>
             <button type="submit">Login</button>
         </form>
         <div>
@@ -20,13 +30,44 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+const authStore = useAuthStore();
 
 const email = ref('');
 const password = ref('');
+const userType = ref('client');
+const error = ref('');
 
-const login = () => {
+const tryLogin = async () => {
     console.log('Logging in...');
+    login(email.value, password.value, userType.value).then((res) => {
+        console.log(res);
+        handleResponse(res);
+    });
 };
+
+const handleResponse = (res: ApiResponse) => {
+    console.log('Handling response...', res);
+    if (res.code === 200) {
+        console.log('Login successful');
+        console.log('Token:', res.data.token);
+        authStore.token = res.data.token;
+        authStore.uid = res.data.uid;
+        authStore.userType = res.data.userType;
+        navigateTo('/dashboard')
+    }
+    else if (res.code === 401) {
+        // wrong credentials
+        error.value = res.message;
+    }
+    else if (res.code === 500) {
+        // Display the error message
+        error.value = res.message;
+    }
+    else {
+        // error is not planned
+        error.value = 'An error occured. Please try again later';
+    }
+}
 </script>
 
 <style scoped lang="scss">

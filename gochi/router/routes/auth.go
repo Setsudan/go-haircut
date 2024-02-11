@@ -16,7 +16,6 @@ func AuthentificationRoutes(r *chi.Mux) {
 		r.Post("/client_login", clientLogin)
 		r.Post("/saloon_login", saloonLogin)
 		r.Post("/client_signup", clientSignup)
-		r.Post("/saloon_signup", saloonSignup)
 	})
 }
 
@@ -83,7 +82,21 @@ func clientLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	SendResponse(w, http.StatusOK, "Success", "Login successful", map[string]string{"token": token}, nil)
+	user, err := database.GetClientByEmail(login.Email)
+	if err != nil {
+		SendResponse(w, http.StatusInternalServerError, "Error", "Error getting user", nil, err)
+		return
+	}
+
+	SendResponse(w, http.StatusOK, "Success", "Login successful", struct {
+		Token    string `json:"token"`
+		UID      string `json:"uid"`
+		UserType string `json:"userType"`
+	}{
+		Token:    token,
+		UID:      user.UID,
+		UserType: "client",
+	}, nil)
 }
 
 func saloonLogin(w http.ResponseWriter, r *http.Request) {
@@ -111,5 +124,19 @@ func saloonLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	SendResponse(w, http.StatusOK, "Success", "Login successful", map[string]string{"token": token}, nil)
+	saloons, err := database.GetSaloonByEmail(login.Email)
+	if err != nil {
+		SendResponse(w, http.StatusInternalServerError, "Error", "Error getting saloon", nil, err)
+		return
+	}
+
+	SendResponse(w, http.StatusOK, "Success", "Login successful", struct {
+		Token    string `json:"token"`
+		UID      string `json:"uid"`
+		UserType string `json:"userType"`
+	}{
+		Token:    token,
+		UID:      saloons.UID,
+		UserType: "saloon",
+	}, nil)
 }
