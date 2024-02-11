@@ -10,7 +10,7 @@ var db = SetupDatabase()
 
 // ===== For clients =====
 func GetAllClients() ([]structs.Client, error) {
-	rows, err := db.Query("SELECT uid, email FROM clients")
+	rows, err := db.Query("SELECT uid, email, password FROM clients")
 	if err != nil {
 		return nil, err
 	}
@@ -19,7 +19,7 @@ func GetAllClients() ([]structs.Client, error) {
 	var clients []structs.Client
 	for rows.Next() {
 		var c structs.Client
-		if err := rows.Scan(&c.UID, &c.Email); err != nil {
+		if err := rows.Scan(&c.UID, &c.Email, &c.Password); err != nil {
 			return nil, err
 		}
 		clients = append(clients, c)
@@ -130,7 +130,7 @@ func GetAdminByUID(uid string) (structs.Admin, error) {
 
 // ===== For hair saloons =====
 func GetAllHairSaloons() ([]structs.HairSaloon, error) {
-	rows, err := db.Query("SELECT uid, name, address, email, phone, openingTime, closingTime FROM hairSaloon")
+	rows, err := db.Query("SELECT uid, name, address, email, phone, openingTime, closingTime, password FROM hairSaloon")
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +139,7 @@ func GetAllHairSaloons() ([]structs.HairSaloon, error) {
 	var salons []structs.HairSaloon
 	for rows.Next() {
 		var s structs.HairSaloon
-		if err := rows.Scan(&s.UID, &s.Name, &s.Address, &s.Email, &s.Phone, &s.OpeningTime, &s.ClosingTime); err != nil {
+		if err := rows.Scan(&s.UID, &s.Name, &s.Address, &s.Email, &s.Phone, &s.OpeningTime, &s.ClosingTime, &s.Password); err != nil {
 			return nil, err
 		}
 		salons = append(salons, s)

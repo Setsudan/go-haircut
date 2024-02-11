@@ -7,6 +7,7 @@
             <label for="password">Password:</label>
             <input type="password" id="password" v-model="password" required>
             <button type="submit">Register</button>
+            <span v-if="error">{{ error }}</span>
         </form>
         <div class="auth_options">
             <nuxt-link to="/auth/register/saloon">
@@ -28,13 +29,29 @@ import { ref } from 'vue';
 
 const email = ref('');
 const password = ref('');
-
+const error = ref('');
 const register = () => {
     const client = {
         email: email.value,
         password: password.value
     };
-    console.log(client);
+    signup(client, "client").then((res) => {
+        console.log(res);
+        handleResponse(res);
+    });
+};
+
+const handleResponse = (res: ApiResponse) => {
+    console.log('Handling response...', res);
+    if (res.code === 201) {
+        console.log('Registration successful');
+        navigateTo('/auth/login');
+    }
+    else if (res.code === 400) {
+        // wrong credentials
+        console.log('Registration failed');
+        error.value = res.message;
+    }
 };
 </script>
 

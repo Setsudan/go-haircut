@@ -1,7 +1,7 @@
 <template>
     <main>
         <h1>Create Hairdressing Saloon</h1>
-        <form @submit="registerSaloon">
+        <form @submit.prevent="registerSaloon">
             <label for="name">Name:</label>
             <input type="text" id="name" v-model="saloon.name" required>
 
@@ -31,6 +31,8 @@
             <input type="password" id="password" v-model="saloon.password" required>
             <span v-if="!isPasswordValid && saloon.password.length > 3" style="color: red;">Invalid password format</span>
 
+
+            <span v-if="error" style="color: red;">{{ error }}</span>
             <button type="submit">Register</button>
         </form>
         <div class="auth_options">
@@ -70,6 +72,7 @@ const isEmailValid = ref(true);
 const isPhoneValid = ref(true);
 const isTimeConflict = ref(false);
 const isPasswordValid = ref(true);
+const error = ref('');
 
 const reformatTime = (time: string) => {
     const [hours, minutes] = time.split(':');
@@ -101,7 +104,25 @@ const registerSaloon = () => {
         return;
     }
 
-    console.log(saloon.value);
+    console.log(saloon.value)
+
+    signup(saloon.value, "saloon").then((res) => {
+        console.log(res);
+        handleResponse(res);
+    });
+};
+
+const handleResponse = (res: ApiResponse) => {
+    console.log('Handling response...', res);
+    if (res.code === 200) {
+        console.log('Registration successful');
+        navigateTo('/auth/login');
+    }
+    else if (res.code === 400) {
+        // wrong credentials
+        console.log('Registration failed');
+        error.value = res.message;
+    }
 };
 </script>
 

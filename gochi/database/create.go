@@ -23,16 +23,10 @@ func CreateSaloon(saloonData structs.CreateSaloon) (string, error) {
 	db := SetupDatabase()
 	defer db.Close()
 
-	hashedPassword, err := HashPassword(saloonData.Password)
-	if err != nil {
-		log.Printf("failed to hash password: %v", err)
-		return "", err
-	}
-
-	_, err = db.Exec(`
+	_, err := db.Exec(`
 		INSERT INTO hairSaloon (uid, name, address, email, phone, openingtime, closingtime, password)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-	`, uid, saloonData.Name, saloonData.Address, saloonData.Email, saloonData.Phone, saloonData.OpeningTime, saloonData.ClosingTime, hashedPassword)
+	`, uid, saloonData.Name, saloonData.Address, saloonData.Email, saloonData.Phone, saloonData.OpeningTime, saloonData.ClosingTime, saloonData.Password)
 	if err != nil {
 		log.Printf("failed to create HairSaloon: %v", err)
 		return "", err

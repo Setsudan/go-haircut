@@ -16,6 +16,7 @@ func AuthentificationRoutes(r *chi.Mux) {
 		r.Post("/client_login", clientLogin)
 		r.Post("/saloon_login", saloonLogin)
 		r.Post("/client_signup", clientSignup)
+		r.Post("/saloon_signup", saloonSignup)
 	})
 }
 

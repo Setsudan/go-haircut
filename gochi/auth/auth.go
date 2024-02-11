@@ -30,6 +30,7 @@ func GenerateSaloonJWT(saloon structs.HairSaloon) (string, error) {
 // Client operations //
 // ////////////////////
 func CreateClient(client structs.CreateClient) (string, error) {
+	fmt.Println(client.Password)
 	hashedPassword, err := database.HashPassword(client.Password)
 	if err != nil {
 		return "", err

@@ -53,6 +53,56 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"saloonId\":\"b08bcc06-3487-4ddc-811e-11c5cfdae100\",\r\n\"clientId\":\"ee0b0754-09da-488d-bb70-0fe675534239\",\r\n\"hairdresserId\":\"90bcd3d9-55f9-4694-9a0e-0565b125d485\",\r\n\"startHour\":\"2024-02-09T05:00:00Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/appointments/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"appointments",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete All",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/appointments/delete/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"appointments",
+								"delete",
+								"all"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -65,7 +115,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/clients/all",
+							"raw": "http://localhost:8080/clients/ee0b0754-09da-488d-bb70-0fe675534239",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -73,7 +123,56 @@
 							"port": "8080",
 							"path": [
 								"clients",
-								"all"
+								"ee0b0754-09da-488d-bb70-0fe675534239"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"contact@ethlny.net\",\r\n    \"password\": \"Test123456789!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/client_signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"client_signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/clients/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"clients",
+								""
 							]
 						}
 					},
@@ -99,6 +198,35 @@
 							"path": [
 								"hairdressers",
 								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"saloonID\": \"b08bcc06-3487-4ddc-811e-11c5cfdae100\",\r\n    \"FirstName\": \"Shogu\",\r\n    \"Speciality\": \"Hair\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/hairdressers/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"hairdressers",
+								"create"
 							]
 						}
 					},
@@ -136,7 +264,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Solomon Saloon\",\r\n    \"adress\": \"45 bagdad street, 85000 Shelfey\",\r\n    \"email\": \"contact@solomon.com\",\r\n    \"phone\": \"0557849654\",\r\n    \"openingTime\": \"09:00\",\r\n    \"closingTime\": \"18:00\"\r\n}",
+							"raw": "{\r\n    \"name\": \"Solomon Saloon\",\r\n    \"address\": \"45 bagdad street, 85000 Shelfey\",\r\n    \"email\": \"contact@solomon.com\",\r\n    \"phone\": \"0557849654\",\r\n    \"openingTime\": \"09:00:00\",\r\n    \"closingTime\": \"18:00:00\",\r\n    \"password\": \"Test123456789!\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -153,6 +281,35 @@
 							"path": [
 								"saloons",
 								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Saloon Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"contact@solomon.com\",\r\n    \"password\": \"Test123456789!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/saloon_login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"saloon_login"
 							]
 						}
 					},
