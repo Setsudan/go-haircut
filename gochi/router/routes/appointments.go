@@ -170,6 +170,7 @@ func createAppointment(w http.ResponseWriter, r *http.Request) {
 		StartHour:        appointment.StartHour,
 		AppointmentsDate: appointmentDate,
 	}
+	fmt.Print("Data Appoitment yolo", appointment)
 	uid, err := database.CreateAppointment(appointmentData)
 	if err != nil {
 		SendResponse(w, http.StatusInternalServerError, "Error", "Error creating appointment", nil, err)

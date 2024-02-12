@@ -105,9 +105,10 @@ func createTables(db *sql.DB) {
 				uid VARCHAR(255) PRIMARY KEY,
 				saloonID VARCHAR(255) NOT NULL,
 				clientID VARCHAR(255) NOT NULL,
-				startHour TIMESTAMP NOT NULL,
+				startHour TIME NOT NULL,
 				hairdresserID VARCHAR(255) NULL,
-				status VARCHAR(255) NOT NULL
+				status VARCHAR(255) NOT NULL,
+				appointmentDate DATE
 				)
 									`)
 	checkError(err, "appointments")

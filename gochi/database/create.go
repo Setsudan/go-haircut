@@ -124,12 +124,19 @@ func CreateAppointment(appointmentsData structs.CreateAppointment) (string, erro
 
 	formattedStartHour := startHourTime.Format("15:04:05") // Assuming the format expected by SQL is "15:04:05"
 
+	fmt.Println("Appointment Date", appointmentsData.AppointmentsDate)
+	appointmentDate, err := time.Parse("2006-01-02", appointmentsData.AppointmentsDate.Format("2006-01-02"))
+	if err != nil {
+		log.Printf("failed to parse appointment date: %v", err)
+		return "", err
+	}
+	formattedAppointmentDate := appointmentDate.Format("2006-01-02")
 	db := SetupDatabase()
 	defer db.Close()
 	_, err = db.Exec(`
     INSERT INTO appointments (uid, saloonId, clientId, hairdresserId, startHour, status, appointmentDate)
     VALUES (?, ?, ?, ?, ?, ?, ?)
-`, uid, appointmentsData.SaloonID, appointmentsData.ClientID, appointmentsData.HairdresserID, formattedStartHour, status, appointmentsData.AppointmentsDate)
+`, uid, appointmentsData.SaloonID, appointmentsData.ClientID, appointmentsData.HairdresserID, formattedStartHour, status, formattedAppointmentDate)
 
 	if err != nil {
 		log.Printf("failed to create Appointment: %v", err)
@@ -147,7 +154,6 @@ func CreateAppointment(appointmentsData structs.CreateAppointment) (string, erro
 		return "", parseErr
 	}
 	appointmentEndHour := appointmentStartTime.Add(time.Hour).Format("15:04")
-	appointmentDate := appointmentStartTime.Format("02 janvier 2006")
 	saloonName, err := GetSaloonName(appointmentsData.SaloonID)
 	if err != nil {
 		log.Printf("failed to get saloon name: %v", err)
@@ -162,7 +168,7 @@ func CreateAppointment(appointmentsData structs.CreateAppointment) (string, erro
 	notification.SendEmail(notification.EmailParams{
 		ToEmail:       clientMail,
 		Subject:       "RDV accepté",
-		Date:          appointmentDate,
+		Date:          formattedAppointmentDate,
 		StartHour:     appointmentsData.StartHour,
 		EndHour:       appointmentEndHour,
 		SaloonName:    saloonName,
